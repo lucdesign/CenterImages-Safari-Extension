@@ -784,14 +784,16 @@
 
   //////////////////////////////////////////////////////////////////////////////////
 
-  var sugus = (function () {
+  var
+  centerImages = null,
+  sugus = (function () {
 
     var
     images,
     children,
     i;
 
-    // local 'SvgHack'
+    // local
     function svgHack () {
 
       var
@@ -818,7 +820,21 @@
     }
     // end 'svgHack'
 
+    // local
+    function imageBamPostHack () {
+      document.body.removeAttribute('onload');
+      var head = document.getElementsByTagName('HEAD')[0];
+      var body = document.getElementsByTagName('BODY')[0];
+      document.removeChild(head);
+      document.removeChild(body);
+    }
+    // end 'imageBamPostHack'
+
     // catch SVG first!
+    if ( /imagebam/i.test(document.URL) ) {
+      document.addEventListener('load', imageBamPostHack, false );
+      return;
+    }
     if ( document instanceof SVGDocument ) {
       return { kind: 'svg', payload : svgHack() }; // ██████████████████
     } else {
@@ -847,8 +863,7 @@
       // nothing useful found
       return { kind : null, payload : null }; // ██████████████████
     }
-  })(),
-  centerImages = null;
+  })();
 
   // 'sugus' is the essence of the page - its images!
   function start (e) {
@@ -879,7 +894,6 @@
       }
     }
   }
-
 
   start( null );
   window.addEventListener('focus', start, false);
