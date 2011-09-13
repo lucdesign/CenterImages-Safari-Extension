@@ -1,0 +1,192 @@
+/**
+*    toolbar CSS
+*    CenterImages Safari Extension
+*    Version 4.0
+*    © 2011 lucdesign
+**/
+
+* { -webkit-transition: opacity 1s;
+}
+
+body {
+  text-align: center;
+  background: hsl(35,3%,62%) url('../gfx/badge.png') left no-repeat;
+  -webkit-box-shadow: inset 0px 1px 0px hsl(0,0%,75%), inset 0px -1px 0px hsl(0,0%,0%); 
+  padding: 5px 180px 0px 180px;
+  color: black;
+  text-shadow: 1px 1px rgba(255,255,255,.3);
+  font-family: 'Lucida Grande';
+}
+
+input, button {
+  margin-right: 5px;
+  z-index: 2;
+  position: relative;
+  cursor: pointer;
+  text-shadow: 0px 1px 0px hsla(0,0%,100%,.3);
+}
+
+button,
+button:disabled:active {
+  background-image:
+  -webkit-linear-gradient(
+    top,
+    hsl(0,0%,88%),
+    hsl(0,0%,66%)
+  );
+  border: 1px solid hsl(0,0%,31%);
+  border-radius: 4px;
+  box-shadow: 0px 1px 0px rgba(255,255,255,.6);
+  height: 22px;
+  padding: 0 0 0 12px;
+  width: 140px;
+  z-index: 2;
+}
+
+button:active {
+  -webkit-box-shadow: inset hsla(0,0%,0%,1) 0 1px 5px;
+  background-image:
+  -webkit-linear-gradient(
+    top,
+    hsl(0,0%,70%),
+    hsl(0,0%,50%)
+  );
+}
+
+button:not(#hide)::before,
+button:not(#hide)::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 5px;
+  border: 1px solid rgba(0,0,0,.3);
+  -webkit-transition: all 0.4s;
+}
+
+button:not(#hide)::before {
+  background-image: -webkit-radial-gradient(center, rgba(100,100,100,1), black);
+}
+
+button:not(#hide)::after {
+  background-image: -webkit-radial-gradient(center, rgba(100,255,100,1), green);
+  box-shadow: 0 0 4px green;
+  opacity: 0;
+}
+
+button:not(#hide).pressed::after {
+  opacity: 1;
+}
+
+button:disabled { color: #888; }
+label.disabled { color: #777; }
+
+button:not(#hide):disabled::after {
+  background-image: -webkit-radial-gradient(center, rgba(150,100,100,1), rgba(100,100,100,1));
+  box-shadow: 0 0 4px transparent;
+  border: 1px solid rgba(100,100,100,.3);
+  opacity: 1;
+}
+
+button#hide {
+  width: 2em;
+  position: absolute;
+  right: 10px;
+  top: 4px;
+  padding: 0;
+}
+button#hide::after {
+  content: '×';
+}
+
+label {
+  color: hsl(0,0%,15%);
+  margin-left: 10px;
+  vertical-align: 0px;
+  font-weight: 500;
+  text-shadow: 0px 1px 0px hsla(0,0%,100%,.3);
+}
+
+#copy {
+  text-align: right;
+  width: 150px; height: 20px;
+  line-height: 20px;
+  position: absolute; bottom: 4px; right: 57px;
+  cursor: pointer;
+  z-index: 0;
+}
+
+input[type='range'] {
+  -webkit-appearance: none; /* Remove Safari default */
+  width: 128px;
+  vertical-align: -5px;
+  height: 5px;
+  border-radius: 3px;
+  position: relative; top: -5px;
+  background-image: -webkit-linear-gradient( left, black, white );
+  border-top: 1px solid rgba(0,0,0,0.5);
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+}
+
+input[type='range']:disabled {
+  background: transparent;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Remove Safari default */
+  position: relative;
+  top: 1px;
+  left: 0;
+  width: 22px;
+  height: 17px;
+  border-radius: 4px;
+  background-image:
+  -webkit-linear-gradient(
+    left,
+    hsl( 0, 0%, 70% ),
+    hsl( 0, 0%, 70% ) 40%,
+    hsl( 0, 0%, 40% ) 45%,
+    hsl( 0, 0%, 40% ) 51%,
+    hsl( 0, 0%, 80% ) 52%,
+    hsl( 0, 0%, 10% ) 53%,
+    hsl( 0, 0%, 10% ) 54%,
+    hsl( 0, 0%, 80% ) 58%,
+    hsl( 0, 0%, 70% ) 60%,
+    hsl( 0, 0%, 70% )
+  ),
+  -webkit-linear-gradient(
+    top,
+    hsla(0,0%,100%,.2),
+    hsla(0,0%,0%,.2)
+  );
+  box-shadow:
+  hsla(0, 0%, 100%, 0.5) 0 2px 2px inset,
+  hsla(0, 0%,   0%, 0.3) 0 -1px 0px inset,
+  hsla(0, 0%,  17%, 0.5  ) 0 1px 0px,
+  hsla(0, 0%,  15%, 0.5  ) 0 2px 0px,
+  hsla(0, 0%,   0%, 0.5) 0 4px 3px;
+  -webkit-transform: translateY(-2px);
+  -webkit-transition: opacity 0.4s 0.4s;
+  cursor: pointer;
+}
+
+input[type='range']:disabled::-webkit-slider-thumb {
+  opacity: 0;
+}
+
+#bg {
+  display: inline-block;
+  position: relative;
+  top: 0;
+  left: 0;
+/*  background-color: rgba(0,0,0,0.05);*/
+  border-radius: 4px;
+  border: 1px solid hsl(0,0%,31%);
+  box-shadow: 0px 1px 0px rgba(255,255,255,.6), inset 0px 1px 1px rgba(0,0,0,.4);
+  height: 17px;
+  padding: 3px 12px 0 12px;
+  margin-right: 5px;
+}

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>DefaultValue</key>
+		<string>Reflection</string>
+		<key>Key</key>
+		<string>Effect</string>
+		<key>Title</key>
+		<string>Effect</string>
+		<key>Titles</key>
+		<array>
+			<string>None</string>
+			<string>Reflection</string>
+			<string>Shadow</string>
+		</array>
+		<key>Type</key>
+		<string>RadioButtons</string>
+		<key>Values</key>
+		<array>
+			<string>None</string>
+			<string>Reflection</string>
+			<string>Shadow</string>
+		</array>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<true/>
+		<key>Key</key>
+		<string>ShowBars</string>
+		<key>Title</key>
+		<string>Show Toolbar if Applicable</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<false/>
+		<key>Key</key>
+		<string>Zoom</string>
+		<key>Title</key>
+		<string>Zoom</string>
+		<key>Type</key>
+		<string>Hidden</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<false/>
+		<key>Key</key>
+		<string>Equalize</string>
+		<key>Title</key>
+		<string>Equalize</string>
+		<key>Type</key>
+		<string>Hidden</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<real>16</real>
+		<key>Key</key>
+		<string>BGColor</string>
+		<key>Title</key>
+		<string>Background Brightness</string>
+		<key>Type</key>
+		<string>Hidden</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<true/>
+		<key>Key</key>
+		<string>AutoBGColor</string>
+		<key>Title</key>
+		<string>Auto Background Color</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
+</array>
+</plist>
