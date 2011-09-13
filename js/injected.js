@@ -496,7 +496,7 @@
     }
     // end 'toggleZoom'
 
-    // local ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // method ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     this.redraw = function () {
 
       var
@@ -575,7 +575,7 @@
       } else {
         setBgCol ( this.bgCol );
       }
-    }
+    };
     // end 'redraw'
 
     // messaging inbound ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -628,7 +628,7 @@
     // end 'sendLocalSettings'
 
     // local ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    function init () {
+    this.init = (function () {
       // first, clean up malformed pages (picasa!)
       solo.lastValues = {
         windowHeight : null,
@@ -679,12 +679,10 @@
 
       // now we can ask the global page for the settings
       notifyGlobal('settings');
-    }
+    })();
     // end 'init'
 
     // -----------------------------------------------------------------------------
-
-    init();
 
   }
   // end 'soloImage'
