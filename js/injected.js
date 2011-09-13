@@ -822,18 +822,23 @@
 
     // local
     function imageBamPostHack () {
+      var head, body, image;
       document.body.removeAttribute('onload');
-      var head = document.getElementsByTagName('HEAD')[0];
-      var body = document.getElementsByTagName('BODY')[0];
-      document.removeChild(head);
-      document.removeChild(body);
+      head = document.getElementsByTagName('HEAD')[0];
+      body = document.getElementsByTagName('BODY')[0];
+      document.lastChild.removeChild(head);
+      document.lastChild.removeChild(body);
+      document.lastChild.appendChild(document.createElement('BODY'));
+      image = document.createElement('IMG');
+      document.body.appendChild(image);
+      image.src = '';
     }
     // end 'imageBamPostHack'
 
     // catch SVG first!
     if ( /imagebam/i.test(document.URL) ) {
-      document.addEventListener('load', imageBamPostHack, false );
-      return;
+      imageBamPostHack();
+      return { kind : 'imagebam', payload : null };
     }
     if ( document instanceof SVGDocument ) {
       return { kind: 'svg', payload : svgHack() }; // ██████████████████
@@ -877,6 +882,7 @@
           case 'edge' : 
           case 'svg' : centerImages = new SoloImage( sugus.payload, e );
           break;
+          case 'imagebam' : break;
           case 'multi' :
           // multipleImages( sugus.payload, e );
           notifyGlobal('noImage');
