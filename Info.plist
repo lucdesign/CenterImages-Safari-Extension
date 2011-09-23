@@ -57,6 +57,10 @@
 			<array>
 				<string>js/injected.js</string>
 			</array>
+			<key>Start</key>
+			<array>
+				<string>js/prejected.js</string>
+			</array>
 		</dict>
 		<key>Stylesheets</key>
 		<array>
