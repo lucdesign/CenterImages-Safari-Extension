@@ -9,7 +9,6 @@
 // self-executing anonymous function for scope
 (function () {
 
-
   // helper
   function hide (el) {
     el.classList.add('hide');
@@ -51,15 +50,17 @@
   // Class █████████████████████████████████████████████████████████████████████████
   function SuperImage (image) {
 
-    var supi = this,
-    imageWidth  = image.naturalWidth,
-    imageHeight = image.naturalHeight;
+    var supi = this;
+
+    supi.imageWidth  = image.naturalWidth;
+    supi.imageHeight = image.naturalHeight;
+    supi.indicator = newElement( 'div', 'indicator', document.body, true );
 
     // Class ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     function Equalizer () {
 
       // TO DO: add routines for multiple images
-
+            
       // local Equalizer -----------------------------------------------------------
       function nulledArray256 () {
         var i, arr = [];
@@ -72,7 +73,7 @@
       function averageBorderColor (c) {
         var
         i, subpixel, offset,
-        w = imageWidth, h = imageHeight,
+        w = supi.imageWidth, h = supi.imageHeight,
         d = 1, // distance from border, >= 0
         b = 3, // breadth of the sample, > 0
         db = 2 * d + b,
@@ -148,13 +149,11 @@
         }
 
         // OPTIMIZED CODE FOLLOWS
-        subpixel = dataLength - 1;
-        while (true) {
-          subpixel--;
-          this.data[2][pixData[subpixel]]++; subpixel--;
-          this.data[1][pixData[subpixel]]++; subpixel--;
-          this.data[0][pixData[subpixel]]++; subpixel--;
-          if ( subpixel < 0 ) { break; }
+        subpixel = dataLength;
+        while (subpixel--) {
+          this.data[2][pixData[--subpixel]]++;
+          this.data[1][pixData[--subpixel]]++;
+          this.data[0][pixData[--subpixel]]++;
         }
         // END OPTIMIZED CODE
 
@@ -180,18 +179,18 @@
       // SubClass Equalizer --------------------------------------------------------
       function LookUpTable ( hist ) {
 
-        // TIME CRITICAL --- LookupTable.employ consumes about half of the processing time
+        // TIME CRITICAL --- LookupTable.employ consumes about a third of the processing time
         var color, value;
 
         this.employ = function (pMap) {
-          var subpixel = pMap.length - 1;
-          // HAND OPTIMIZED CODE BELOW!
-          while (true) {
-            subpixel--; pMap[subpixel] = this.table[2][pMap[subpixel]];
-            subpixel--; pMap[subpixel] = this.table[1][pMap[subpixel]];
-            subpixel--; pMap[subpixel] = this.table[0][pMap[subpixel]];
-            if (subpixel-- === 0) { return; }
+          var subpixel = pMap.length;
+          // OPTIMIZED CODE BELOW!
+          while (subpixel--) {
+            pMap[--subpixel] = this.table[2][pMap[subpixel]];
+            pMap[--subpixel] = this.table[1][pMap[subpixel]];
+            pMap[--subpixel] = this.table[0][pMap[subpixel]];
           }
+          // END OPTIMIZED CODE
         };
 
         this.table = [];
@@ -204,23 +203,6 @@
       }
       // end 'LookUpTable'
 
-      // SubClass Equalizer ---------------------------------------------- Indicator
-      function Indicator () {
-        //for singe image situation
-        this.elem = newElement( 'div', 'indicator', document.body, false );
-        this.toggle = function (show) {
-          switch (show) {
-            case true :
-            show ( this.elem );
-            break;
-            case false:
-            hide( this.elem );
-            break;
-          }
-        };
-      }
-      // end 'Equalizer.Indicator'
-
       // method Equalizer -------------------------------------------------- analyze
       this.analyze = function () {
 
@@ -228,12 +210,10 @@
         canvas = document.createElement('canvas'),
         ctx;
 
-        supi.indicator = new Indicator().elem;
-
         // a canvas is used for histogram creation and correction
         canvas.style.display = 'none';
-        canvas.width = imageWidth;
-        canvas.height = imageHeight;
+        canvas.width = supi.imageWidth;
+        canvas.height = supi.imageHeight;
         canvas.classList.add( 'picture' );
         document.body.appendChild( canvas );
 
@@ -242,7 +222,7 @@
 
         supi.bcol1 = averageBorderColor(ctx);
 
-        supi.imageData = ctx.getImageData( 0, 0, imageWidth, imageHeight );
+        supi.imageData = ctx.getImageData( 0, 0, supi.imageWidth, supi.imageHeight );
         supi.histogram = new Histogram ( supi.imageData.data );
         supi.equalizer = canvas;
         notifyGlobal('GoodImage', supi.histogram.good );
@@ -251,6 +231,7 @@
         } else {
           supi.indicator.classList.remove('inactive');
         }
+        supi.rendered = true;
       };
       // end 'Equalizer.analyze'
 
@@ -262,12 +243,12 @@
         lut;
 
         if ( !supi.histogram.good ) {
-          lut = new LookUpTable ( supi.histogram );
-          lut.employ( supi.imageData.data );
+          lut = new LookUpTable (supi.histogram);
+          lut.employ(supi.imageData.data);
           ctx.putImageData( supi.imageData, 0, 0 );
           supi.bcol2 = averageBorderColor(ctx);
           supi.equalizer.style.display = null;
-          supi.rendered = true;
+          supi.corrected = true;
         }
       };
       // end 'Equalizer.correct'
@@ -288,7 +269,7 @@
     // end method 'Equalizer.save'
 
     // method ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    this.fitToSoloImage = function () {
+    this.fitToOriginal = function () {
       //  for singe image documents only!
       var csstext =
       'top: ' + image.offsetTop + 'px; ' +
@@ -297,7 +278,7 @@
       'width: ' + image.offsetWidth + 'px;';
       supi.equalizer.style.cssText = csstext;
     };
-    // end method 'SuperImage.fitToSoloImage'
+    // end method 'SuperImage.fitToOriginal'
 
     // method ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     this.toggle = function (e) {
@@ -311,7 +292,7 @@
         }
       } else {
         active = e && !supi.histogram.good;
-        if ( active && !supi.rendered ) {
+        if ( active && !supi.corrected ) {
           supi.eq.correct();
         }
         if ( active !== supi.active ) {
@@ -323,6 +304,7 @@
 
     this.active = false;
     this.rendered = false;
+    this.corrected = false;
     this.eq = new Equalizer ();
 
   }
@@ -379,16 +361,13 @@
   //////////////////////////////////////////////////////////////////////////////////
 
   // Class █████████████████████████████████████████████████████████████████████████
-  function SoloImage ( image, e ) {
+  function SoloImage ( kind, image, e ) {
 
     var
     solo = this,
     startY = 0,
     oldBgCol = 0,
-    dragging = false,
-    imageWidth,
-    imageHeight,
-    imageAspect;
+    dragging = false;
 
     // helper ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     function setBgCol (cl) {
@@ -431,7 +410,7 @@
 
       switch ( e.type ) {
         case 'mousedown' :
-        if (/BODY|HTML/i.test(e.target.tagName)) {
+        if (/BODY|HTML/i.test(e.target.tagName) && e.button === 0) {
           document.body.classList.add('drag');
           startY = e.clientY;
           if( solo.bgCol === undefined ) {
@@ -472,7 +451,8 @@
 
     // event handler ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     function handleKeypress (key) {
-      if ( /27|38/.test(key.keyCode) ) {
+      if ( /27|38/.test(key.keyCode === 27 
+      || ( key.keycode === 38 && document.url.split('?', -1) === 'from=deximages') ) ) {
         window.close();
       }
     }
@@ -497,84 +477,79 @@
     // end 'toggleZoom'
 
     // method ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    this.redraw = function () {
+    this.redraw = function (e) {
 
       var
-      windowHeight = window.innerHeight,
-      windowWidth  = window.innerWidth,
-      windowAspect = windowHeight / windowWidth,
-      imageBigger  = imageWidth > windowWidth || imageHeight > windowHeight,
-      bodyWider    = windowAspect < imageAspect,
-      csstext      = null,
-      hidden       = false;
+      trigger = e.type || e,
+      csstext;
 
-      if ( this.lastValues.imageBigger !== imageBigger ||
-      this.lastValues.bodyWider !== bodyWider ||
-      this.zoom !== this.lastValues.zoom ) {
-        this.lastValues.imageBigger = imageBigger;
-        this.lastValues.bodyWider = bodyWider;
-        // make image and superImage not render for a moment
-        image.style.display = 'none';
-        hidden = true;
-        if ( this.superImage.rendered ) {
-          this.superImage.equalizer.style.display = 'none';
-          hide ( this.superImage.equalizer );
+      switch(trigger) {
+        case 'resize' : {
+          // establish the dimensions of the screen, set correct classes for the CSS
+          image.style.display = 'none';
+          if ( solo.superImage.rendered ) { solo.superImage.equalizer.style.display = 'none'; }
+
+          solo.windowHeight = window.innerHeight;
+          solo.windowWidth  = window.innerWidth;
+          solo.windowAspect = solo.windowHeight / solo.windowWidth;
+          solo.imageBigger  = solo.imageWidth > solo.windowWidth || solo.imageHeight > solo.windowHeight;
+          solo.bodyWider    = solo.windowAspect < solo.imageAspect;
+          if (solo.imageBigger) { document.body.classList.add('bigger'); } else { document.body.classList.remove('bigger'); }
+          if (solo.bodyWider)   { document.body.classList.add('wider' ); } else { document.body.classList.remove('wider' ); }
+
+          document.body.style.lineHeight = solo.windowHeight + 'px';
+          image.style.display = null;
+          if (solo.superImage.rendered) {
+            solo.superImage.fitToOriginal();
+            solo.superImage.equalizer.style.display = null;
+          }
+          break;
         }
-        if ( imageBigger ) {
-          document.body.classList.add('bigger');
-        } else {
-          document.body.classList.remove('bigger');
+        case 'bcol' : {
+          // 'normal' or automatic background color?
+          if (solo.superImage.autoBgCol) {
+            setBgCol(solo.superImage.active ? solo.superImage.bcol2 : solo.superImage.bcol1);
+          } else {
+            setBgCol(solo.bgCol);
+          }
+          break;
         }
-        if ( bodyWider ) {
-          document.body.classList.add('wider');
-        } else {
-          document.body.classList.remove('wider');
+        case 'equi' : {
+          // switch between 'image' and 'super image'
+          if (solo.superImage.active) {
+            solo.superImage.fitToOriginal();
+            show(solo.superImage.equalizer);
+            show(solo.superImage.indicator);
+            hide(image );
+          } else {
+            if (solo.superImage.rendered) { 
+              hide(solo.superImage.equalizer );
+              hide(solo.superImage.indicator );
+            }
+            show(image);
+          }
+          solo.redraw('bcol');
+          break;
         }
-      }
-      if ( this.lastValues.windowHeight !== windowHeight ) {
-        this.lastValues.windowHeight = windowHeight;
-        document.body.style.lineHeight = windowHeight + 'px';
+        case 'zoom' : {
+          if (solo.zoom) {
+            document.body.classList.add('zoom');
+            csstext = null; // forget image size constraints
+          } else {
+            document.body.classList.remove('zoom');
+            csstext = 'width: ' + solo.imageWidth + 'px; height: ' + solo.imageHeight + 'px;'; // force image to display at it's natural size
+          }
+          image.style.cssText = csstext;
+          solo.superImage.fitToOriginal();
+          break;
+        }
+        default: console.log('undefined event: ' + trigger); break;
       }
 
-      if ( this.lastValues.zoom !== this.zoom ) {
-        this.lastValues.zoom = this.zoom;
-        if ( this.zoom ) {
-          document.body.classList.add('zoom');
-          csstext = null; // forget image size constraints
-        } else {
-          document.body.classList.remove('zoom');
-          csstext = 'width: ' + imageWidth + 'px; height: ' + imageHeight + 'px;'; // force image to display at it's natural size
-        }
-        image.style.cssText = csstext;
-      }
-
-      // now make the image visible again
-      if ( hidden ) { 
-        image.style.display = null;
-        if ( this.superImage.rendered ) { this.superImage.equalizer.style.display = null; }
-      }
       // remove properties added by safari against our wishes
       image.removeAttribute('width');
       image.removeAttribute('height');
 
-      // switch between 'image' and 'super image'
-      if ( this.superImage.rendered ) { 
-        this.superImage.fitToSoloImage();
-      }
-      if ( this.superImage.active ) {
-        show ( this.superImage.equalizer );
-        show ( this.superImage.indicator );
-        hide ( image );
-      } else {
-        hide ( this.superImage.equalizer );
-        hide ( this.superImage.indicator );
-        show ( image );
-      }
-      if ( this.superImage.autoBgCol ) {
-        setBgCol ( this.superImage.active ? this.superImage.bcol2 : this.superImage.bcol1 );
-      } else {
-        setBgCol ( this.bgCol );
-      }
     };
     // end 'redraw'
 
@@ -586,30 +561,25 @@
 
       switch (message.name) {
         case 'settings' :
-        if ( !solo.svg ) {
-          solo.superImage.autoBgCol = m.auto;
-          if ( !solo.superImage.autoBgCol ) {
-            setBgCol( parseInt( m.bcol, 10 ) );
-          }
-          solo.superImage.toggle( m.equi );
-        }
-        setStyleClass( m.efct );
-        toggleZoom( m.zoom );
-        solo.redraw();
+        solo.superImage.toggle(m.equi);
+        setStyleClass(m.efct);
+        toggleZoom(m.zoom);
+        solo.superImage.autoBgCol = m.auto && !solo.noSuperImage;
+        solo.bgCol = parseInt( m.bcol, 10 );
+        solo.redraw('resize');
+        solo.redraw('equi');
+        solo.redraw('bcol');
+        solo.redraw('zoom');
         break;
-
-        case 'Zoom'         : toggleZoom( m ); solo.redraw();                                    break;
-        case 'bgCol'        : setBgCol(parseInt( m, 10));                                   break;
-        case 'AutoBGColor'  : if ( !solo.svg ) { solo.superImage.autoBgCol = m; solo.redraw(); } break;
-        case 'Equalize'     : if ( !solo.svg ) { solo.superImage.toggle( m ); solo.redraw(); }   break;
-        case 'Effect'       : setStyleClass( m );                                           break;
-
-        case 'instructions' : solo.instructions.create( m );                                break;
-        case 'toggle_instr' : solo.instructions.toggle( m );                                break;
-
-        case 'downloadEQ'   : if ( !solo.svg ) { solo.superImage.save(); }                  break;
-
-        default             :                                                               break;
+        case 'Zoom'         : toggleZoom(m); solo.redraw('zoom');                                                        break;
+        case 'bgCol'        : solo.superImage.autoBgCol = false; solo.bgCol = parseInt(m, 10); solo.redraw('bcol');      break;
+        case 'AutoBGColor'  : if (!solo.noSuperImage ) { solo.superImage.autoBgCol = m; } solo.redraw('bcol');           break;
+        case 'Equalize'     : if (!solo.noSuperImage ) { solo.superImage.toggle(m); solo.redraw('equi'); }               break;
+        case 'Effect'       : setStyleClass(m);                                                                          break;
+        case 'instructions' : solo.instructions.create(m);                                                               break;
+        case 'toggle_instr' : solo.instructions.toggle(m);                                                               break;
+        case 'downloadEQ'   : if (!solo.noSuperImage) { solo.superImage.save(); }                                        break;
+        default             :                                                                                            break;
       }
     }
     // end 'respond'
@@ -619,43 +589,51 @@
       // called on 'focus' to restore the settings of the window
       notifyGlobal('localSettings', {
         zoom : this.zoom,
-        equa : !this.svg && this.superImage.active,
+        equa : !this.noSuperImage && this.superImage.active,
         bcol : this.bgCol,
         inst : this.instructions.visible,
-        good : this.svg || this.superImage.histogram.good
+        good : this.noSuperImage || this.superImage.histogram.good
       });
     };
     // end 'sendLocalSettings'
 
     // local ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    this.init = (function () {
-      // first, clean up malformed pages (picasa!)
-      solo.lastValues = {
-        windowHeight : null,
-        imageBigger  : null,
-        bodyWider    : null,
-        zoom         : null
-      };
+    this.init = function () {
 
-      solo.svg = image.classList.contains('svgWrapper');
+      // this will not change
+      solo.imageWidth   = image.naturalWidth  || image.sizeX;
+      solo.imageHeight  = image.naturalHeight || image.sizeY;
+      solo.imageAspect  = solo.imageHeight / solo.imageWidth;
 
+      solo.noSuperImage = ( kind === 'svg' || kind === 'imagebam' ); // !( imageWidth * imageHeight ) > 0 ); // || 
+
+      // this will change on resize
+      solo.windowHeight = window.innerHeight;
+      solo.windowWidth  = window.innerWidth;
+      solo.windowAspect = solo.windowHeight / solo.windowWidth;
+
+      // clean up malformed pages (picasa!)
       cleanAttributes(document.body);
       document.body.classList.add('CenterImages');
       cleanAttributes(image);
-      hide ( image );
+      image.style.display = 'none';
+      hide(image);
       image.classList.add('picture');
 
       solo.instructions = new Instructions ();
-      if ( !solo.svg ) {
+      if (solo.noSuperImage) {
+        solo.superImage = {
+          rendered : false,
+          corrected : false,
+          active : false
+        };
+      } else {
         solo.superImage = new SuperImage (image);
       }
-      solo.bgCol   = 0;
-      imageWidth   = image.naturalWidth  || image.sizeX;
-      imageHeight  = image.naturalHeight || image.sizeY;
-      imageAspect  = imageHeight / imageWidth;
-      solo.zoom = false;
+      solo.bgCol = 0;
+      solo.zoom  = false;
 
-      // trick to get the vertical center without additional css
+      // trick to get the vertical center using only 'line-height' without additional css
       document.body.insertBefore(document.createTextNode("\u00a0"), document.body.firstChild.nextSibling );
 
       // anonymous self-executing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -671,7 +649,7 @@
         // document.addEventListener( 'mouseout', drag, false);
         document.addEventListener( 'contextmenu', handleContextMenu, false);
         document.addEventListener( 'click', toggleZoom, false);
-        if ( !solo.svg ) {
+        if ( !solo.noSuperImage ) {
           document.addEventListener( 'dblclick', solo.superImage.toggle, false);
         }
       })();
@@ -679,8 +657,10 @@
 
       // now we can ask the global page for the settings
       notifyGlobal('settings');
-    })();
+    };
     // end 'init'
+
+    image.addEventListener( 'load', solo.init, false );
 
     // -----------------------------------------------------------------------------
 
@@ -822,36 +802,39 @@
 
     // local
     function imageBamPostHack () {
-      var head, body, image;
+      var head, body, bamimage, i, imgs = document.images, kids = document.body.childNodes;
+      for (i = 0; i < imgs.length; i++) {
+        if ( imgs[i].onclick ) {
+          bamimage = imgs[i];
+          bamimage.parentNode.removeChild(bamimage);
+        }
+      }
       document.body.removeAttribute('onload');
       head = document.getElementsByTagName('HEAD')[0];
       body = document.getElementsByTagName('BODY')[0];
       document.lastChild.removeChild(head);
       document.lastChild.removeChild(body);
       document.lastChild.appendChild(document.createElement('BODY'));
-      image = document.createElement('IMG');
-      document.body.appendChild(image);
-      image.src = '';
+      document.body.appendChild(bamimage);
+      return bamimage;
     }
     // end 'imageBamPostHack'
 
-    // catch SVG first!
     if ( /imagebam/i.test(document.URL) ) {
-      imageBamPostHack();
-      return { kind : 'imagebam', payload : null };
+      document.removeEventListener('beforeload', imageBamHack, true);
+      return { kind : 'imagebam', payload : imageBamPostHack() }; // ██████████████████
     }
     if ( document instanceof SVGDocument ) {
       return { kind: 'svg', payload : svgHack() }; // ██████████████████
     } else {
       images = document.images;
-      children = document.body.childNodes;
-
-      if (document.head === null) {
+      if (document.head === null && images.length === 1) {
         // BINGO!!! this is an 'ImageDocument'
         return { kind : 'classic', payload : images[0] }; // ██████████████████
       }
 
       if ( document.body ) { // we have a well-formed document ...
+        children = document.body.childNodes;
         if ( images.length === 1 ) { // ... that contains just one image ..
           for ( i = 0; i < children.length; i++ ) { // but maybe divx has spoiled the document!
             if ( children[i].nodeType === 1 && children[i].id !== 'myEventWatcherDiv' && children[i].tagName !== 'IMG' ) {
@@ -859,7 +842,8 @@
             }
           } 
           return { kind : 'edge', payload : images[0] }; // ██████████████████
-        } else if ( images.length > 1 ) {
+        }
+        if ( images.length > 1 ) {
           // these are the images of a 'normal' page
           return { kind : 'multi', payload : images }; // ██████████████████
         }
@@ -873,16 +857,16 @@
   // 'sugus' is the essence of the page - its images!
   function start (e) {
     if ( window.top !== window.self ) {
-      document.images[0].style.opacity = '1';
+      if (document.images.length > 0) { document.images[0].style.opacity = '1'; }
       // notifyGlobal('iframe');
     } else {
       if ( e === null ) {
         switch ( sugus.kind ) {
           case 'classic' :
           case 'edge' : 
-          case 'svg' : centerImages = new SoloImage( sugus.payload, e );
+          case 'imagebam' :
+          case 'svg' : centerImages = new SoloImage( sugus.kind, sugus.payload, e );
           break;
-          case 'imagebam' : break;
           case 'multi' :
           // multipleImages( sugus.payload, e );
           notifyGlobal('noImage');
