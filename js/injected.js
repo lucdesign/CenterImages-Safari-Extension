@@ -123,22 +123,22 @@
         subpixel,
         dataLength = pixData.length,
         minQuality = 0.9, // must be >> 0 and <= 1; 1 means we need a perfect histogram, 0 never triggers color correction
-        clipPercentage = 0.5; // percetage of bright and dark pixels thrown away - must be <<< 50 (photoshop default: .5)
+        clipPercentage = 0.5; // percentage of bright and dark pixels thrown away - must be <<< 50 (photoshop default: .5)
 
 
         // local Histogram 'clip'
         function clipColor ( percent ) {
           // we are clipping a certain percentage of the pixels on the bright and dark ends of the histogram
           var
-          maxClippedPixels = Math.floor( ( dataLength / 400 ) * percent ),
+          maxClippedPixels = Math.floor((dataLength / 400 ) * percent),
           samples,
-          lower = 0,
-          upper = 255;
+          minimum = 0,
+          maximum = 255;
 
-          samples = 0; while ( samples <= maxClippedPixels ) { samples += hist.data[color][ lower++ ]; }
-          samples = 0; while ( samples <= maxClippedPixels ) { samples += hist.data[color][ upper-- ]; }
+          samples = 0; while (samples <= maxClippedPixels) { samples += hist.data[color][minimum++]; }
+          samples = 0; while (samples <= maxClippedPixels) { samples += hist.data[color][maximum--]; }
 
-          return { 'lower' : lower, 'upper' : upper };
+          return { lower : minimum, upper : maximum };
         }
         // end local 'clip'
 
@@ -160,19 +160,19 @@
         this.clipping = [];
         // calculate six histogram clipping points (r, g, b, each lower and upper)
         for (color = 0; color < 3; color++) {
-          this.clipping[color] = clipColor( clipPercentage );
+          this.clipping[color] = clipColor(clipPercentage);
         }
 
         // calculate three histogram stretch factors (r, g, b) and overall histogram quality while clipping extreme values
         this.quality = 1;
         this.stretchFactor = [];
 
-        for ( color = 0; color < 3; color++ ) { 
-          range[color] = this.clipping[color]['upper'] - this.clipping[color]['lower'] + 1; // integer between 1 and 256
+        for (color = 0; color < 3; color++) { 
+          range[color] = this.clipping[color].upper - this.clipping[color].lower + 1; // integer between 1 and 256
           this.stretchFactor[color] = 256 / range[color]; // float >= 1 and <= 256
           this.quality /= this.stretchFactor[color]; // float > 0 and <= 1
         }
-        this.good = ( this.quality >= minQuality );
+        this.good = (this.quality >= minQuality);
       }
       // end 'Histogram'
 
@@ -197,7 +197,7 @@
         for (color = 0; color < 3; color++) {
           this.table[color] = nulledArray256();
           for (value = 0; value < 256; value++ ) {
-            this.table[color][value] = ~~ ( ( value - hist.clipping[color]['lower'] ) * hist.stretchFactor[color] );
+            this.table[color][value] = ~~ ( ( value - hist.clipping[color].lower ) * hist.stretchFactor[color] );
           }
         }
       }
@@ -370,17 +370,11 @@
     dragging = false;
 
     // helper ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    function setBgCol (cl) {
-      if ( cl !== undefined ) {
-        if ( cl.length ) {
-          document.body.style.backgroundColor = 'rgb( ' + cl[0] + ', ' + cl[1] + ', ' + cl[2] + ' )';
-        } else {
-          solo.bgCol = cl;
-          document.body.style.backgroundColor = 'rgb( ' + cl + ', ' + cl + ', ' + cl + ' )';
-        }
-      } else {
-        document.body.style.backgroundColor = 'rgb( ' + solo.bgCol + ', ' + solo.bgCol + ', ' + solo.bgCol + ' )';
-      }
+    function setBgCol (col) {
+      // first branch: "col = col || solo.bgCol" does not work because black = 0 = false
+      // second branch: generate RGB out of brightness value if needed
+      col = col === undefined ? solo.bgCol : col.length ? col : [col, col, col];
+      document.body.style.backgroundColor = 'rgb(' + col[0] + ',' + col[1] + ',' + col[2] + ')';
     }
     // end 'setBgCol'
 
