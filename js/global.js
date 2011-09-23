@@ -69,7 +69,7 @@ function respond ( message ) {
     case 'bgColor'       : settings.BgColor = m; settings.AutoBGColor = false; break;
     case 'equalized'     : settings.Equalize = m; break;
     case 'instructions'  : notifyPage('instructions', strings.instructions); break;
-    // case 'iframe'        : safari.extension.addContentStyleSheetFromURL('repair.css'); break;
+    case 'imagebamurl'   : nofifyPage('ibu', m); break; 
     default              : break;
   }
 }
@@ -78,12 +78,14 @@ function obey ( command ) {
   switch (command.command) {
     case 'equalize'   : settings.Equalize = !settings.Equalize; break;
     case 'downloadEQ' : notifyPage('downloadEQ'); break;
+    case 'autocolor'  : settings.AutoBGColor = true; break;
     default           : break;
   }
 }
 
 function addContextMenuItem ( e ) {
+  e.contextMenu.appendContextMenuItem('autocolor', strings.autocolor);
   if (/canvas/i.test(e.userInfo)) {
-    e.contextMenu.appendContextMenuItem( 'downloadEQ', strings.contextmenu );
+    e.contextMenu.appendContextMenuItem('downloadEQ', strings.contextmenu);
   }
 }
