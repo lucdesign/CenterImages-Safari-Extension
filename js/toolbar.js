@@ -22,7 +22,6 @@ function setupUi () {
   function setAutoBgColor () {
     settings.AutoBGColor = ui.auto.checked;
   }
-  
 
   function goLuc () {
     var newTab = safari.application.activeBrowserWindow.openTab();
@@ -41,7 +40,6 @@ function setupUi () {
         break;
         case ui.copy : goLuc(); break;
         case ui.hide : settings.ShowBars = false; break;
-        
         default : break; 
       }
     }
@@ -114,11 +112,11 @@ function setupUi () {
     hide : document.getElementById( 'hide' )
   };
   
-  ui.zoom.innerHTML = strings.bar.zoom    ; ui.zoom.className   = settings.zoom     ? 'pressed' : null;
-  ui.equi.innerHTML = strings.bar.equi    ; ui.equi.className   = settings.Equalize ? 'pressed' : null;
-  ui.bgsl.value     = settings.BGColor    ; ui.slbl.textContent = strings.bar.slbl;
+  ui.zoom.innerHTML = strings.bar.zoom;     ui.zoom.className   = settings.zoom     ? 'pressed' : null;
+  ui.equi.innerHTML = strings.bar.equi;     ui.equi.className   = settings.Equalize ? 'pressed' : null;
+  ui.bgsl.value     = settings.BGColor;     ui.slbl.textContent = strings.bar.slbl;
   ui.auto.checked   = settings.AutoBGColor; ui.albl.textContent = strings.bar.albl;
-  ui.inst.innerHTML = strings.bar.inst    ; ui.inst.className   = instWinVisible ? 'pressed' : null;
+  ui.inst.innerHTML = strings.bar.inst;     ui.inst.className   = instWinVisible    ? 'pressed' : null;
 
   document.addEventListener( 'click', handleClick, false );
   ui.bgsl.addEventListener( 'change', setBgColor, false );
