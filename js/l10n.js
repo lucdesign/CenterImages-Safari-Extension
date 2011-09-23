@@ -30,7 +30,8 @@ l10n = {
     [ 'HR' , null ],
     [ 'p'  , '<small><strong>HINT: </strong>Because of a known bug in Safari, extension bars will stop working after the forward or back buttons are pressed.<br />If this happens, the page needs to be roladed. Better yet, hide the bar (&times;) and use your mouse.</small>' ]
     ],
-    contextmenu : 'Download Enhanced Image'
+    contextmenu : 'Download Enhanced Image',
+    autocolor   : 'Automatic Background Color'
   },
   // German strings
   de : {
@@ -53,7 +54,8 @@ l10n = {
     [ 'HR' , null ],
     [ 'P'  , '<small><strong>HINWEIS:</strong> Aufgrund eines bekannten Fehlers in Safari hören Erweiterungs-Leisten auf zu funktionieren, wenn die Vor- oder Zurückfunktion des Browsers benutzt wurde. In diesem Fall bitte das Bild neu laden oder die Leiste verstecken und auf Mausbedienung umsteigen.</small>' ]
     ],
-    contextmenu : 'Verbessertes Bild sichern'
+    contextmenu : 'Verbessertes Bild sichern',
+    autocolor   : 'Hintergrundfarbe automatisch bestimmen'
   }
 };
 
