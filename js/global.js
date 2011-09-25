@@ -17,8 +17,6 @@ app.addEventListener('command', obey, false);
 app.addEventListener('contextmenu', addContextMenuItem, false);
 settings.addEventListener ('change', settingsHaveChanged, false);
 
-// safari.extension.addContentStyleSheetFromURL(safari.extension.baseURI + 'repair.css');
-
 function notifyPage ( name, message ) {
   safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(name, message);
 }
