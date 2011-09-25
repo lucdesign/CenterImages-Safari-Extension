@@ -30,7 +30,7 @@
 		<key>Key</key>
 		<string>ShowBars</string>
 		<key>Title</key>
-		<string>Show Toolbar if Applicable</string>
+		<string>Show Toolbar</string>
 		<key>Type</key>
 		<string>CheckBox</string>
 	</dict>
