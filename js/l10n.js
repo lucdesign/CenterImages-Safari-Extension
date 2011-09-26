@@ -5,7 +5,6 @@
 *    © 2011 lucdesign
 **/
 
-
 // Global variables
 var strings,
 // English strings
@@ -14,15 +13,15 @@ l10n = {
     bar : {
       equi : 'Enhance Contrast',
       zoom : 'Fit Screen',
-      slbl : 'Background',                                                      
-      albl : 'auto',         
+      slbl : 'Background',
+      albl : 'auto',
       inst : 'Help'
     },
     // keys encode the tagName beginning from character 2
     instructions : [
     [ 'H1' , 'CenterImages wants to be used <br />with your mouse!'],
     [ 'H3' , 'Click and drag on the background:' ],
-    [ 'P'  , 'up = brighter, down = darker' ], 
+    [ 'P'  , 'up = brighter, down = darker' ],
     [ 'H3' , 'Click on the image:' ],
     [ 'P'  , 'original size / fit to window' ],
     [ 'H3' , 'Doubleclick beside the image:' ],
@@ -38,10 +37,10 @@ l10n = {
     bar : {
       equi : 'Kontrast verbessern',
       zoom : 'Größe anpassen',
-      slbl : 'Hintergrund',         
-      albl : 'auto',         
+      slbl : 'Hintergrund',
+      albl : 'auto',
       inst : 'Hilfe'
-    },                                           
+    },
     // keys encode the tagName beginning from character 2
     instructions : [
     [ 'H1' , 'CenterImages läßt sich <br />komplett mit der Maus bedienen!' ],
@@ -49,7 +48,7 @@ l10n = {
     [ 'P'  , 'hinauf = heller, hinunter = dunkler' ],
     [ 'H3' , 'Klick auf das Bild:' ],
     [ 'P'  , 'Originalgröße/Fenstergröße' ],
-    [ 'H3' , 'Doppelklick neben dem Bild:' ], 
+    [ 'H3' , 'Doppelklick neben dem Bild:' ],
     [ 'P'  , 'Bildverbesserung ein/aus (für SVG nicht verfügbar)' ],
     [ 'HR' , null ],
     [ 'P'  , '<small><strong>HINWEIS:</strong> Aufgrund eines bekannten Fehlers in Safari hören Erweiterungs-Leisten auf zu funktionieren, wenn die Vor- oder Zurückfunktion des Browsers benutzt wurde. In diesem Fall bitte das Bild neu laden oder die Leiste verstecken und auf Mausbedienung umsteigen.</small>' ]
