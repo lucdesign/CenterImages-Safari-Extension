@@ -15,7 +15,6 @@ function setupUi() {
   var
   instWinVisible = false,
   settings = safari.extension.settings,
-  buttons = safari.extension.toolbarItems,
   ui = {
     zoom: document.getElementById('zoom'),
     equi: document.getElementById('equi'),
@@ -98,11 +97,9 @@ function setupUi() {
         ui.bgsl.value = m.bcol;
         ui.inst.className = m.inst ? 'pressed' : null;
         ui.zoom.disabled = ui.slbl.className = ui.bgsl.disabled = ui.auto.disabled = ui.albl.className = ui.inst.disabled = null;
-        buttons[0].disabled = false;
         break;
         case 'initialize':
         ui.zoom.disabled = ui.slbl.className = ui.bgsl.disabled = ui.auto.disabled = ui.albl.className = ui.inst.disabled = null;
-        buttons[0].disabled = false;
         break;
         case 'bgColor':
         ui.bgsl.value = m;

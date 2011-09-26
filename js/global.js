@@ -10,6 +10,7 @@
 var
   settings = safari.extension.settings,
   bars = safari.extension.bars,
+  buttons = safari.extension.toolbarItems,
   app = safari.application,
   i, isActive = false;
 
@@ -19,6 +20,28 @@ app.addEventListener('command', obey, false);
 app.addEventListener('contextmenu', addContextMenuItem, false);
 settings.addEventListener('change', settingsHaveChanged, false);
 
+function toggleGui() {
+
+  var i;
+
+  for (i = 0; i < buttons.length; i++) {
+    if (buttons[i].browserWindow === safari.application.activeBrowserWindow) {
+        buttons[i].disabled = !isActive;
+    }
+  }
+  if (settings.ShowBars) {
+    for (i = 0; i < bars.length; i++) {
+      if (bars[i].browserWindow === safari.application.activeBrowserWindow) {
+        if (isActive) {
+          bars[i].show();
+        } else {
+          bars[i].hide();
+        }
+      }
+    }
+  }
+}
+
 function notifyPage(name, message) {
   'use strict';
   safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(name, message);
@@ -26,13 +49,10 @@ function notifyPage(name, message) {
 
 function settingsHaveChanged(s) {
   'use strict';
+
   switch (s.key) {
   case 'ShowBars':
-    if (settings.ShowBars) {
-      bars[0].show();
-    } else {
-      bars[0].hide();
-    }
+    toggleGui();
     break;
   case 'Zoom':
     notifyPage('Zoom', settings.Zoom);
@@ -53,7 +73,7 @@ function settingsHaveChanged(s) {
 }
 
 function serveSettings() {
-  'use strict';
+
   notifyPage('settings', {
     zoom: settings.Zoom,
     bcol: settings.BGColor,
@@ -64,7 +84,6 @@ function serveSettings() {
 }
 
 function respond(message) {
-  'use strict';
 
   var m = message.message;
 
@@ -73,24 +92,13 @@ function respond(message) {
     settings.Zoom = m.zoom;
     settings.Equalize = m.equa;
     settings.BgColor = m.bcol;
-    if (settings.ShowBars) {
-      for (i = 0; i < bars.length; i++) {
-        if (bars[i].browserWindow === safari.application.activeBrowserWindow) {
-          bars[i].show();
-        }
-      }
-    }
+    isActive = true;
+    toggleGui();
     break;
   case 'initialize':
-    serveSettings();
-    if (settings.ShowBars) {
-      for (i = 0; i < bars.length; i++) {
-        if (bars[i].browserWindow === safari.application.activeBrowserWindow) {
-          bars[i].show();
-        }
-      }
-    }
     isActive = true;
+    serveSettings();
+    toggleGui();
     break;
   case 'zoom':
     settings.Zoom = m;
@@ -110,11 +118,7 @@ function respond(message) {
     break;
   case 'noImage':
     isActive = false;
-    for (i = 0; i < bars.length; i++) {
-      if (bars[i].browserWindow === safari.application.activeBrowserWindow) {
-        bars[i].hide();
-      }
-    }
+    toggleGui();
     break;
   default:
     break;

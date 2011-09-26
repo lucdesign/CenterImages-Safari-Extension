@@ -12,7 +12,7 @@ body {
   text-align: center;
   background: hsl(35,3%,62%) url('../gfx/badge.png') left no-repeat;
   -webkit-box-shadow: inset 0px 1px 0px hsl(0,0%,75%), inset 0px -1px 0px hsl(0,0%,0%); 
-  padding: 5px 180px 0px 180px;
+  padding: 4px 180px 0px 180px;
   color: black;
   text-shadow: 1px 1px rgba(255,255,255,.3);
   font-family: 'Lucida Grande';
@@ -36,7 +36,7 @@ button:disabled:active {
   );
   border: 1px solid hsl(0,0%,31%);
   border-radius: 4px;
-  box-shadow: 0px 1px 0px rgba(255,255,255,.6);
+  box-shadow: 0px 1px 0px rgba(255,255,255,.3);
   height: 22px;
   padding: 0 0 0 12px;
   width: 140px;
@@ -185,7 +185,10 @@ input[type='range']:disabled::-webkit-slider-thumb {
 /*  background-color: rgba(0,0,0,0.05);*/
   border-radius: 4px;
   border: 1px solid hsl(0,0%,31%);
-  box-shadow: 0px 1px 0px rgba(255,255,255,.6), inset 0px 1px 1px rgba(0,0,0,.4);
+  box-shadow:
+  inset 0px -1px 1px rgba(255,255,255,.6),
+  inset 0px 1px 1px rgba(0,0,0,.4),
+  0px 1px 0px rgba(255,255,255,.3);
   height: 17px;
   padding: 3px 12px 0 12px;
   margin-right: 5px;

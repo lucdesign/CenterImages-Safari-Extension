@@ -590,7 +590,7 @@
       var m = message.message;
 
       switch (message.name) {
-        case 'settings' :
+        case 'settings' : console.log(m);
         solo.superImage.toggle(m.equi);
         setStyleClass(m.efct);
         toggleZoom(m.zoom);
@@ -801,7 +801,7 @@
     } else {
       if (e === null) {
         switch (sugus.kind) {
-          case 'classic' : case 'edge' : case 'imagebam' : case 'svg' : centerImages = new SoloImage(sugus.kind, sugus.payload, e);
+          case 'classic' : case 'edge' : case 'imagebam' : case 'svg' : centerImages = new SoloImage(sugus.kind, sugus.payload);
           break;
           case 'multi' :
           // multipleImages( sugus.payload, e );
