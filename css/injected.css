@@ -62,6 +62,14 @@ body > img:only-child:not(.picture) { opacity: 0; }
   -webkit-transition-delay: 0.4s;
 }
 
+.CenterImages .picture {
+  cursor: -webkit-zoom-in;
+}
+
+.CenterImages.zoom .picture {
+  cursor: -webkit-zoom-out;
+}
+
 .CenterImages.bigger .picture {
   cursor: -webkit-zoom-out;
 }
@@ -70,28 +78,20 @@ body > img:only-child:not(.picture) { opacity: 0; }
   cursor: -webkit-zoom-in;
 }
 
-.CenterImages:not(.bigger) .picture {
-  cursor: -webkit-zoom-in;
-}
-
-.CenterImages:not(.bigger).zoom .picture {
-  cursor: -webkit-zoom-out;
-}
-
 .CenterImages canvas {
   position: absolute;
 }
 
-.CenterImages.zoom.wider img,
-.CenterImages.zoom.wider img.hide {
+.CenterImages.zoom img {
   width: auto;
   height: 100%;
 }
-.CenterImages.zoom:not(.wider) img,
-.CenterImages.zoom:not(.wider) img.hide {
+
+.CenterImages.zoom.wider img {
   width: 100%;
   height: auto;
 }
+
 
 
 /*************************************** EFFECTS ************************************************/

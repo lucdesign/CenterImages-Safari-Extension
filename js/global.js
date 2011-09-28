@@ -42,39 +42,42 @@ function toggleGui() {
   }
 }
 
-function notifyPage(name, message) {
+function notify(requesting, name, message) {
   'use strict';
-  safari.application.activeBrowserWindow.activeTab.page.dispatchMessage(name, message);
+  requesting.page.dispatchMessage(name, message);
 }
 
 function settingsHaveChanged(s) {
   'use strict';
+
+  var frontmost = safari.application.activeBrowserWindow.activeTab;
 
   switch (s.key) {
   case 'ShowBars':
     toggleGui();
     break;
   case 'Zoom':
-    notifyPage('Zoom', settings.Zoom);
+    notify(frontmost, 'Zoom', settings.Zoom);
     break;
   case 'Equalize':
-    notifyPage('Equalize', settings.Equalize);
+    notify(frontmost, 'Equalize', settings.Equalize);
     break;
   case 'BGColor':
-    notifyPage('bgCol', settings.BGColor);
+    notify(frontmost, 'bgCol', settings.BGColor);
     break;
   case 'Effect':
-    notifyPage('Effect', settings.Effect);
+    notify(frontmost, 'Effect', settings.Effect);
     break;
   case 'AutoBGColor':
-    notifyPage('AutoBGColor', settings.AutoBGColor);
+    notify(frontmost, 'AutoBGColor', settings.AutoBGColor);
     break;
   }
 }
 
-function serveSettings() {
+function serveSettings(calling_page) {
 
-  notifyPage('settings', {
+  notify(
+  calling_page, 'settings', {
     zoom: settings.Zoom,
     bcol: settings.BGColor,
     equi: settings.Equalize,
@@ -85,7 +88,7 @@ function serveSettings() {
 
 function respond(message) {
 
-  var m = message.message;
+  var m = message.message, caller = message.target;
 
   switch (message.name) {
   case 'restore':
@@ -97,7 +100,7 @@ function respond(message) {
     break;
   case 'initialize':
     isActive = true;
-    serveSettings();
+    serveSettings(caller);
     toggleGui();
     break;
   case 'zoom':
@@ -111,10 +114,10 @@ function respond(message) {
     settings.Equalize = m;
     break;
   case 'instructions':
-    notifyPage('instructions', strings.instructions);
+    notify(caller, 'instructions', strings.instructions);
     break;
   case 'imagebamurl':
-    notifyPage('ibu', m);
+    notify(caller, 'ibu', m);
     break;
   case 'noImage':
     isActive = false;
@@ -133,7 +136,7 @@ function obey(command) {
     settings.Equalize = !settings.Equalize;
     break;
   case 'downloadEQ':
-    notifyPage('downloadEQ');
+    notify(safari.application.activeBrowserWindow.activeTab, 'downloadEQ');
     break;
   case 'autocolor':
     settings.AutoBGColor = true;

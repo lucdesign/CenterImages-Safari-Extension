@@ -8,7 +8,7 @@
 
 /*global SVGDocument, safari, strings, console, imageBamHack */
 
-// self-executing anonymous function for scope
+// self-invoking anonymous function to protect the global scope
 (function() {
 
   // helper
@@ -531,9 +531,9 @@
           solo.windowWidth  = window.innerWidth;
           solo.windowAspect = solo.windowHeight / solo.windowWidth;
           solo.imageBigger  = solo.imageWidth > solo.windowWidth || solo.imageHeight > solo.windowHeight;
-          solo.bodyWider    = solo.windowAspect < solo.imageAspect;
+          solo.imageWider   = solo.windowAspect > solo.imageAspect;
           if (solo.imageBigger) { document.body.classList.add('bigger'); } else { document.body.classList.remove('bigger'); }
-          if (solo.bodyWider)   { document.body.classList.add('wider' ); } else { document.body.classList.remove('wider' ); }
+          if (solo.imageWider)   { document.body.classList.add('wider' ); } else { document.body.classList.remove('wider' ); }
           document.body.style.lineHeight = solo.windowHeight + 'px'; // vertically center the image
           toggleDisplay(true, 'kill');
           break;
@@ -626,14 +626,14 @@
         good : this.noSuperImage || this.superImage.histogram.good,
         // for both
         bcol : this.bgCol,
-        auto : !this.noSuperImage && this.superImageAutoBgCol
+        auto : !this.noSuperImage && this.superImage.AutoBgCol
       });
     };
     // end 'sendLocalSettings'
 
     // local ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     this.init = function() {
-
+      
       // this will not change
       solo.imageWidth   = image.naturalWidth  || image.sizeX;
       solo.imageHeight  = image.naturalHeight || image.sizeY;
@@ -656,6 +656,7 @@
 
       solo.instructions = new Instructions ();
       if (solo.noSuperImage) {
+        // create a dummy
         solo.superImage = {
           rendered : false,
           corrected : false,
@@ -668,8 +669,9 @@
       solo.bgCol = 0;
       solo.zoom  = false;
 
-      // trick to get the vertical center using only 'line-height' without additional css
-      document.body.insertBefore(document.createTextNode("\u00a0"), document.body.firstChild.nextSibling );
+      // safari does not add a doctype to image-documents, so we are in quirks mode!
+      // we need a hack to get the vertical center using only 'line-height' without additional css
+      document.body.insertBefore(document.createTextNode('\u00a0'), image.nextSibling );
 
       // anonymous self-executing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       (function addAllDarnedEventlisteners () {

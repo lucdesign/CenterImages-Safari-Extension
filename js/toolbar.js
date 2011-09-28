@@ -117,7 +117,6 @@ function setupUi() {
     }
   }
 
-
   ui.zoom.innerHTML = strings.bar.zoom;
   ui.zoom.className = settings.zoom ? 'pressed' : null;
   ui.equi.innerHTML = strings.bar.equi;

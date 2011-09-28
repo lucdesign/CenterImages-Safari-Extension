@@ -12,10 +12,11 @@ body {
   text-align: center;
   background: hsl(35,3%,62%) url('../gfx/badge.png') left no-repeat;
   -webkit-box-shadow: inset 0px 1px 0px hsl(0,0%,75%), inset 0px -1px 0px hsl(0,0%,0%); 
+  box-shadow: inset 0px 1px 0px hsl(0,0%,75%), inset 0px -1px 0px hsl(0,0%,0%); 
   padding: 4px 180px 0px 180px;
   color: black;
   text-shadow: 1px 1px rgba(255,255,255,.3);
-  font-family: 'Lucida Grande';
+  font-family: 'Lucida Grande', 'MS Shell Dlg', Verdana;
 }
 
 input, button {
@@ -29,6 +30,13 @@ input, button {
 button,
 button:disabled:active {
   background-image:
+  -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(hsl(0,0%,88%)),
+    to(hsl(0,0%,66%))
+  );
   -webkit-linear-gradient(
     top,
     hsl(0,0%,88%),
@@ -45,6 +53,15 @@ button:disabled:active {
 
 button:active {
   -webkit-box-shadow: inset hsla(0,0%,0%,1) 0 1px 5px;
+  box-shadow: inset hsla(0,0%,0%,1) 0 1px 5px;
+  background-image:
+  -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(hsl(0,0%,70%)),
+    to(hsl(0,0%,50%))
+  );
   background-image:
   -webkit-linear-gradient(
     top,
@@ -67,7 +84,10 @@ button:not(#hide)::after {
 }
 
 button:not(#hide)::before {
-  background-image: -webkit-radial-gradient(center, rgba(100,100,100,1), black);
+  background-image:
+  -webkit-gradient(radial, center center, 0, center center 50%, from(rgba(100,100,100,1)), to(black));
+  background-image:
+  -webkit-radial-gradient(center, rgba(100,100,100,1), black);
 }
 
 button:not(#hide)::after {
