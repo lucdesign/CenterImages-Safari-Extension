@@ -478,55 +478,14 @@
     // method ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     this.redraw = function(e) {
 
-      function toggleDisplay(on, method) {
-
-        switch(method) {
-          case 'hide' :
-          switch(on) {
-            case false :
-            if (solo.superImage.active) {
-              hide(solo.superImage.equalizer);
-            } else {
-              hide(image);
-            }
-            break;
-            case true :
-            if (solo.superImage.active) {
-              show(solo.superImage.equalizer);
-            } else {
-              show(image);
-            }
-            break;
-          }
-          break;
-          case 'kill' :
-          switch(on) {
-            case false :
-            image.style.display = 'none';
-            if (solo.superImage.rendered) {
-              solo.superImage.equalizer.style.display = 'none';
-            }
-            break;
-            case true :
-            image.style.display = null; // render image again, if only hidden, to get its size
-            solo.superImage.fitToOriginal();
-            if (solo.superImage.rendered) {
-              solo.superImage.equalizer.style.display = null;
-            }
-            break;
-          }
-          break;
-        }
-      }
-
       var
       trigger = e.type || e,
-      csstext;
+      csstext,
+      topMargin;
 
       switch(trigger) {
         case 'resize' :
           // establish the dimensions of the screen, set correct classes for the CSS
-          toggleDisplay(false, 'kill');
           solo.windowHeight = window.innerHeight;
           solo.windowWidth  = window.innerWidth;
           solo.windowAspect = solo.windowHeight / solo.windowWidth;
@@ -534,8 +493,7 @@
           solo.imageWider   = solo.windowAspect > solo.imageAspect;
           if (solo.imageBigger) { document.body.classList.add('bigger'); } else { document.body.classList.remove('bigger'); }
           if (solo.imageWider)   { document.body.classList.add('wider' ); } else { document.body.classList.remove('wider' ); }
-          document.body.style.lineHeight = solo.windowHeight + 'px'; // vertically center the image
-          toggleDisplay(true, 'kill');
+          solo.redraw('zoom');
           break;
         case 'equi' :
           // switch between 'image' and 'super image'
@@ -551,18 +509,22 @@
           solo.redraw('bcol');
           break;
         case 'zoom' :
-          toggleDisplay(false, 'hide');
+          image.style.cssText = '';
           if (solo.zoom) {
             document.body.scrollLeft = document.body.scrollTop = 0;
             document.body.classList.add('zoom');
-            csstext = null; // forget image size constraints
+            topMargin = Math.max(0, Math.round((solo.windowHeight - image.clientHeight) / 2));
+            csstext = 'margin-top: ' + topMargin + 'px;';
           } else {
             document.body.classList.remove('zoom');
-            csstext = 'width: ' + solo.imageWidth + 'px; height: ' + solo.imageHeight + 'px;'; // force image to display at it's natural size
+            topMargin = Math.max(0, Math.round((solo.windowHeight - solo.imageHeight) / 2));
+            csstext =
+            'width: ' + solo.imageWidth + 'px; ' +
+            'height: ' + solo.imageHeight + 'px; ' +
+            'margin-top: ' + topMargin + 'px;';
           }
           image.style.cssText = csstext;
           solo.superImage.fitToOriginal();
-          toggleDisplay(true, 'hide');
           break;
         case 'bcol' :
           // 'normal' or automatic background color?
@@ -671,7 +633,7 @@
 
       // safari does not add a doctype to image-documents, so we are in quirks mode!
       // we need a hack to get the vertical center using only 'line-height' without additional css
-      document.body.insertBefore(document.createTextNode('\u00a0'), image.nextSibling );
+      // document.body.insertBefore(document.createTextNode('\u00a0'), image.nextSibling );
 
       // anonymous self-executing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       (function addAllDarnedEventlisteners () {
