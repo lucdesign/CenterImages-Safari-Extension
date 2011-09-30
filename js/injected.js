@@ -124,7 +124,7 @@
 
       // SubClass Equalizer --------------------------------------------------------
       function Histogram(pixData) {
-        // builds color histogram of {array} pixData ( [ 4 x pixel count ] bytes )
+        // builds color histogram of {array} pixData ([4 x pixel count] bytes)
         // TIME CRITICAL --- consumes about half of the processing time
         var
         hist = this,
@@ -292,7 +292,7 @@
 
       if (e.type && e.type === 'dblclick') {
         e.preventDefault();
-        if (!(/picture/.test(e.target.className) ) && e.detail === 2) {
+        if (!(/picture/.test(e.target.className)) && e.detail === 2) {
           notifyGlobal('equalized', !supi.active && !supi.histogram.good);
         }
       } else {
@@ -481,7 +481,8 @@
       var
       trigger = e.type || e,
       csstext,
-      topMargin;
+      topMargin,
+      dummy; // for short form branches
 
       switch(trigger) {
         case 'resize' :
@@ -492,7 +493,7 @@
           solo.imageBigger  = solo.imageWidth > solo.windowWidth || solo.imageHeight > solo.windowHeight;
           solo.imageWider   = solo.windowAspect > solo.imageAspect;
           if (solo.imageBigger) { document.body.classList.add('bigger'); } else { document.body.classList.remove('bigger'); }
-          if (solo.imageWider)   { document.body.classList.add('wider' ); } else { document.body.classList.remove('wider' ); }
+          if (solo.imageWider)  { document.body.classList.add('wider'); } else { document.body.classList.remove('wider'); }
           solo.redraw('zoom');
           break;
         case 'equi' :
@@ -509,7 +510,7 @@
           solo.redraw('bcol');
           break;
         case 'zoom' :
-        solo.superImage.active ? hide(solo.superImage) : hide(image);
+        dummy = solo.superImage.active ? hide(solo.superImage) : hide(image);
           image.style.cssText = '';
           if (solo.zoom) {
             document.body.scrollLeft = document.body.scrollTop = 0;
@@ -526,7 +527,7 @@
           }
           image.style.cssText = csstext;
           solo.superImage.fitToOriginal();
-          solo.superImage.active ? show(solo.superImage) : show(image);
+          dummy = solo.superImage.active ? show(solo.superImage) : show(image);
           break;
         case 'bcol' :
           // 'normal' or automatic background color?
@@ -549,9 +550,10 @@
 
     // messaging inbound ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     function respond(message) {
-      // console.log('MESSAGE ' + message.name );
 
-      var m = message.message;
+      var
+      m = message.message,
+      dummy; // for short form branches
 
       switch (message.name) {
         case 'settings' : console.log(m);
@@ -559,21 +561,21 @@
         setStyleClass(m.efct);
         toggleZoom(m.zoom);
         solo.superImage.autoBgCol = m.auto && !solo.noSuperImage;
-        solo.bgCol = parseInt( m.bcol, 10 );
+        solo.bgCol = parseInt(m.bcol, 10);
         solo.redraw('resize');
         solo.redraw('equi');
         solo.redraw('bcol');
         solo.redraw('zoom');
         break;
-        case 'Zoom'         : toggleZoom(m); solo.redraw('zoom');                                                        break;
-        case 'bgCol'        : solo.superImage.autoBgCol = false; solo.bgCol = parseInt(m, 10); solo.redraw('bcol');      break;
-        case 'AutoBGColor'  : if (!solo.noSuperImage ) { solo.superImage.autoBgCol = m; } solo.redraw('bcol');           break;
-        case 'Equalize'     : if (!solo.noSuperImage ) { solo.superImage.toggle(m); solo.redraw('equi'); }               break;
-        case 'Effect'       : setStyleClass(m);                                                                          break;
-        case 'instructions' : solo.instructions.create(m);                                                               break;
-        case 'toggle_instr' : solo.instructions.toggle(m);                                                               break;
-        case 'downloadEQ'   : if (!solo.noSuperImage) { solo.superImage.save(); }                                        break;
-        default             :                                                                                            break;
+        case 'Zoom'         : toggleZoom(m); solo.redraw('zoom');                                                   break;
+        case 'bgCol'        : solo.superImage.autoBgCol = false; solo.bgCol = parseInt(m, 10); solo.redraw('bcol'); break;
+        case 'AutoBGColor'  : if (!solo.noSuperImage) { solo.superImage.autoBgCol = m; } solo.redraw('bcol');      break;
+        case 'Equalize'     : if (!solo.noSuperImage) { solo.superImage.toggle(m); solo.redraw('equi'); }          break;
+        case 'Effect'       : setStyleClass(m);                                                                     break;
+        case 'instructions' : solo.instructions.create(m);                                                          break;
+        case 'toggle_instr' : solo.instructions.toggle(m);                                                          break;
+        case 'downloadEQ'   : dummy = solo.noSuperImage ? null : solo.superImage.save();                            break;
+        default             :                                                                                       break;
       }
     }
     // end 'respond'
@@ -597,13 +599,13 @@
 
     // local ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     this.init = function() {
-      
+
       // this will not change
       solo.imageWidth   = image.naturalWidth  || image.sizeX;
       solo.imageHeight  = image.naturalHeight || image.sizeY;
       solo.imageAspect  = solo.imageHeight / solo.imageWidth;
 
-      solo.noSuperImage = (kind === 'svg' || kind === 'imagebam'); // !( imageWidth * imageHeight ) > 0 ); // || 
+      solo.noSuperImage = (kind === 'svg' || kind === 'imagebam'); // !(imageWidth * imageHeight) > 0); // || 
 
       // this will change on resize
       solo.windowHeight = window.innerHeight;
@@ -635,10 +637,12 @@
 
       // safari does not add a doctype to image-documents, so we are in quirks mode!
       // we need a hack to get the vertical center using only 'line-height' without additional css
-      // document.body.insertBefore(document.createTextNode('\u00a0'), image.nextSibling );
+      // document.body.insertBefore(document.createTextNode('\u00a0'), image.nextSibling);
 
       // anonymous self-executing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       (function addAllDarnedEventlisteners () {
+        var dummy; // for short form branches
+
         safari.self.addEventListener('message', respond, false);
 
         window.addEventListener('keydown', handleKeypress, false);
@@ -649,9 +653,7 @@
         document.addEventListener('mouseup', drag, false);
         document.addEventListener('contextmenu', handleContextMenu, false);
         document.addEventListener('click', toggleZoom, false);
-        if ( !solo.noSuperImage ) {
-          document.addEventListener('dblclick', solo.superImage.toggle, false);
-        }
+        dummy = solo.noSuperImage ? null : document.addEventListener('dblclick', solo.superImage.toggle, false);
       }());
       // end 'addAllDarnedEventlisteners'
 
@@ -738,9 +740,9 @@
         return { kind : 'classic', payload : images[0] }; // ██████████████████
       }
 
-      if ( document.body ) { // we have a well-formed document ...
+      if (document.body) { // we have a well-formed document ...
         children = document.body.childNodes;
-        if ( images.length === 1 ) { // ... that contains just one image ..
+        if (images.length === 1) { // ... that contains just one image ..
           for (i = 0; i < children.length; i++) { // but maybe divx has spoiled the document!
             if (children[i].nodeType === 1 && children[i].id !== 'myEventWatcherDiv' && children[i].tagName !== 'IMG') {
               return { kind : null, payload : null }; // ██████████████████
@@ -770,7 +772,7 @@
           case 'classic' : case 'edge' : case 'imagebam' : case 'svg' : centerImages = new SoloImage(sugus.kind, sugus.payload);
           break;
           case 'multi' :
-          // multipleImages( sugus.payload, e );
+          // multipleImages(sugus.payload, e);
           notifyGlobal('noImage');
           break;
           default :
