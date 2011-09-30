@@ -509,6 +509,7 @@
           solo.redraw('bcol');
           break;
         case 'zoom' :
+        solo.superImage.active ? hide(solo.superImage) : hide(image);
           image.style.cssText = '';
           if (solo.zoom) {
             document.body.scrollLeft = document.body.scrollTop = 0;
@@ -525,6 +526,7 @@
           }
           image.style.cssText = csstext;
           solo.superImage.fitToOriginal();
+          solo.superImage.active ? show(solo.superImage) : show(image);
           break;
         case 'bcol' :
           // 'normal' or automatic background color?
