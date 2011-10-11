@@ -2,22 +2,22 @@
 *    injected.css
 *
 *    CenterImages Safari Extension
-*    Version 5.0
+*    Version 5.0.4
 *    © 2011 lucdesign
 **/
 
-* {
+/* first we got to hide all images! */
+body > img:only-child:not(.picture) { opacity: 0; }
+
+.CenterImages, .CenterImages * {
   margin: 0;
   padding: 0;
 }
 
-.hide {
+.CenterImages .hide {
   opacity: 0;
   z-index: -1;
 }
-
-/* first we got to hide all images! */
-body > img:only-child:not(.picture) { opacity: 0; }
 
 /*body { -webkit-user-select: none; }*/
 

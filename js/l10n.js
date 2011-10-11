@@ -1,7 +1,7 @@
 /**
 *    l10n.js
 *    CenterImages Safari Extension
-*    Version 4.0
+*    Version 5.0.4
 *    © 2011 lucdesign
 **/
 

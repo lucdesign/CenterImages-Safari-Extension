@@ -2,7 +2,7 @@
 *    injected.js
 *
 *    CenterImages Safari Extension
-*    Version 5.0
+*    Version 5.0.4
 *    © 2011 lucdesign
 **/
 
@@ -537,7 +537,7 @@
             setBgCol(solo.bgCol);
           }
           break;
-        default: console.log('undefined event: ' + trigger); break;
+        default: break;
       }
 
       // remove attributes added by safari against our wishes
@@ -556,7 +556,7 @@
       dummy; // for short form branches
 
       switch (message.name) {
-        case 'settings' : console.log(m);
+        case 'settings' :
         solo.superImage.toggle(m.equi);
         setStyleClass(m.efct);
         toggleZoom(m.zoom);

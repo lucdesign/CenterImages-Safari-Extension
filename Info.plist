@@ -13,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>5.0</string>
+	<string>5.0.4</string>
 	<key>CFBundleVersion</key>
-	<string>5.0</string>
+	<string>5.0.4</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Bars</key>
@@ -40,8 +40,10 @@
 				<string>EQButton</string>
 				<key>Image</key>
 				<string>gfx/button.png</string>
+				<key>Include By Default</key>
+				<false/>
 				<key>Label</key>
-				<string>EQ</string>
+				<string>CenterImages</string>
 				<key>Palette Label</key>
 				<string>CenterImages</string>
 				<key>Tool Tip</key>

@@ -1,7 +1,7 @@
 /**
 *    toolbar.js
 *    CenterImages Safari Extension
-*    Version 5
+*    Version 5.0.4
 *    © 2011 lucdesign
 **/
 
