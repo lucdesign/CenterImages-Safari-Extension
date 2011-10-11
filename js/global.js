@@ -1,18 +1,18 @@
 /**
- *    global.js
- *    CenterImages Safari Extension
- *    Version 4.0
- *    © 2011 lucdesign
- **/
+*    global.js
+*    CenterImages Safari Extension
+*    Version 5.0.4
+*    © 2011 lucdesign
+**/
 
 /*global safari, strings */
 
 var
-  settings = safari.extension.settings,
-  bars = safari.extension.bars,
-  buttons = safari.extension.toolbarItems,
-  app = safari.application,
-  i, isActive = false;
+settings = safari.extension.settings,
+bars = safari.extension.bars,
+buttons = safari.extension.toolbarItems,
+app = safari.application,
+i, isActive = false;
 
 // Setting up event listeners.
 app.addEventListener('message', respond, false);
@@ -26,18 +26,16 @@ function toggleGui() {
 
   for (i = 0; i < buttons.length; i++) {
     if (buttons[i].browserWindow === safari.application.activeBrowserWindow) {
-        buttons[i].disabled = !isActive;
+      buttons[i].disabled = !isActive;
     }
   }
-  if (settings.ShowBars) {
-    for (i = 0; i < bars.length; i++) {
-      if (bars[i].browserWindow === safari.application.activeBrowserWindow) {
-        if (isActive) {
-          bars[i].show();
-        } else {
-          bars[i].hide();
-        }
+  for (i = 0; i < bars.length; i++) {
+    if (settings.ShowBars && bars[i].browserWindow === safari.application.activeBrowserWindow) {
+      if (isActive) {
+        bars[i].show();
       }
+    } else {
+      bars[i].hide();
     }
   }
 }
@@ -53,22 +51,22 @@ function settingsHaveChanged(s) {
   var frontmost = safari.application.activeBrowserWindow.activeTab;
 
   switch (s.key) {
-  case 'ShowBars':
+    case 'ShowBars':
     toggleGui();
     break;
-  case 'Zoom':
+    case 'Zoom':
     notify(frontmost, 'Zoom', settings.Zoom);
     break;
-  case 'Equalize':
+    case 'Equalize':
     notify(frontmost, 'Equalize', settings.Equalize);
     break;
-  case 'BGColor':
+    case 'BGColor':
     notify(frontmost, 'bgCol', settings.BGColor);
     break;
-  case 'Effect':
+    case 'Effect':
     notify(frontmost, 'Effect', settings.Effect);
     break;
-  case 'AutoBGColor':
+    case 'AutoBGColor':
     notify(frontmost, 'AutoBGColor', settings.AutoBGColor);
     break;
   }
@@ -91,39 +89,39 @@ function respond(message) {
   var m = message.message, caller = message.target;
 
   switch (message.name) {
-  case 'restore':
+    case 'restore':
     settings.Zoom = m.zoom;
     settings.Equalize = m.equa;
     settings.BgColor = m.bcol;
     isActive = true;
     toggleGui();
     break;
-  case 'initialize':
+    case 'initialize':
     isActive = true;
     serveSettings(caller);
     toggleGui();
     break;
-  case 'zoom':
+    case 'zoom':
     settings.Zoom = m;
     break;
-  case 'bgColor':
+    case 'bgColor':
     settings.BgColor = m;
     settings.AutoBGColor = false;
     break;
-  case 'equalized':
+    case 'equalized':
     settings.Equalize = m;
     break;
-  case 'instructions':
+    case 'instructions':
     notify(caller, 'instructions', strings.instructions);
     break;
-  case 'imagebamurl':
+    case 'imagebamurl':
     notify(caller, 'ibu', m);
     break;
-  case 'noImage':
+    case 'noImage':
     isActive = false;
     toggleGui();
     break;
-  default:
+    default:
     break;
   }
 }
@@ -132,16 +130,16 @@ function obey(command) {
   'use strict';
 
   switch (command.command) {
-  case 'equalize':
+    case 'equalize':
     settings.Equalize = !settings.Equalize;
     break;
-  case 'downloadEQ':
+    case 'downloadEQ':
     notify(safari.application.activeBrowserWindow.activeTab, 'downloadEQ');
     break;
-  case 'autocolor':
+    case 'autocolor':
     settings.AutoBGColor = true;
     break;
-  default:
+    default:
     break;
   }
 }
