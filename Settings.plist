@@ -74,15 +74,5 @@
 		<key>Type</key>
 		<string>CheckBox</string>
 	</dict>
-	<dict>
-		<key>DefaultValue</key>
-		<false/>
-		<key>Key</key>
-		<string>ShowToolbarButton</string>
-		<key>Title</key>
-		<string>Show Toolbar Button</string>
-		<key>Type</key>
-		<string>CheckBox</string>
-	</dict>
 </array>
 </plist>
