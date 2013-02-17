@@ -1,8 +1,9 @@
 /**
 *    l10n.js
 *    CenterImages Safari Extension
-*    Version 5.0.4
-*    © 2011 lucdesign
+*    Version 6.0.2
+
+*    © 2012 lucdesign
 **/
 
 // Global variables
@@ -15,7 +16,7 @@ l10n = {
       zoom : 'Fit Screen',
       slbl : 'Background',
       albl : 'auto',
-      inst : 'Help'
+      help : 'Help'
     },
     // keys encode the tagName beginning from character 2
     instructions : [
@@ -25,11 +26,8 @@ l10n = {
     [ 'H3' , 'Click on the image:' ],
     [ 'P'  , 'original size / fit to window' ],
     [ 'H3' , 'Doubleclick beside the image:' ],
-    [ 'P'  , 'Enhance Image Contrast (not available for SVG)' ],
-    [ 'HR' , null ],
-    [ 'p'  , '<small><strong>HINT: </strong>Because of a known bug in Safari, extension bars will stop working after the forward or back buttons are pressed.<br />If this happens, the page needs to be roladed. Better yet, hide the bar (&times;) and use your mouse.</small>' ]
+    [ 'P'  , 'Enhance Image Contrast (not available for SVG and ImageBam)' ]
     ],
-    contextmenu : 'Download Enhanced Image',
     autocolor   : 'Automatic Background Color'
   },
   // German strings
@@ -39,7 +37,7 @@ l10n = {
       zoom : 'Größe anpassen',
       slbl : 'Hintergrund',
       albl : 'auto',
-      inst : 'Hilfe'
+      help : 'Hilfe'
     },
     // keys encode the tagName beginning from character 2
     instructions : [
@@ -49,11 +47,8 @@ l10n = {
     [ 'H3' , 'Klick auf das Bild:' ],
     [ 'P'  , 'Originalgröße/Fenstergröße' ],
     [ 'H3' , 'Doppelklick neben dem Bild:' ],
-    [ 'P'  , 'Bildverbesserung ein/aus (für SVG nicht verfügbar)' ],
-    [ 'HR' , null ],
-    [ 'P'  , '<small><strong>HINWEIS:</strong> Aufgrund eines bekannten Fehlers in Safari hören Erweiterungs-Leisten auf zu funktionieren, wenn die Vor- oder Zurückfunktion des Browsers benutzt wurde. In diesem Fall bitte das Bild neu laden oder die Leiste verstecken und auf Mausbedienung umsteigen.</small>' ]
+    [ 'P'  , 'Bildverbesserung ein/aus (für SVG und ImageBam nicht verfügbar)' ]
     ],
-    contextmenu : 'Verbessertes Bild sichern',
     autocolor   : 'Hintergrundfarbe automatisch bestimmen'
   }
 };

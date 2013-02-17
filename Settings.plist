@@ -58,7 +58,7 @@
 		<key>DefaultValue</key>
 		<real>16</real>
 		<key>Key</key>
-		<string>BGColor</string>
+		<string>BgColor</string>
 		<key>Title</key>
 		<string>Background Brightness</string>
 		<key>Type</key>
@@ -68,9 +68,19 @@
 		<key>DefaultValue</key>
 		<true/>
 		<key>Key</key>
-		<string>AutoBGColor</string>
+		<string>AutoBgColor</string>
 		<key>Title</key>
 		<string>Auto Background Color</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<true/>
+		<key>Key</key>
+		<string>ImageBam</string>
+		<key>Title</key>
+		<string>ImageBam® Support</string>
 		<key>Type</key>
 		<string>CheckBox</string>
 	</dict>

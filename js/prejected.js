@@ -1,18 +1,20 @@
 /**
 *    prejected.js
 *    CenterImages Safari Extension
-*    Version 5.0.4
-*    © 2011 lucdesign
+*    Version 6.0.2
+
+*    © 2012 lucdesign
 **/
 
-function imageBamHack (e) {
+/* global window */
 
-  if (!e.onclick) {
-    e.preventDefault();
+// only used for imagebam to prevent scripts etc. from loading
+if ( /^http:\/\/www\.imagebam\.com\/image/i.test(window.document.URL) ) {
+  function imageBamHack (e) {
+    if (e.target.onclick === null || !(e.target instanceof window.HTMLImageElement)) {
+      e.preventDefault();
+    }
   }
-}
-
-if (/imagebam/i.test(document.URL)) {
-  var bamimage;
-  document.addEventListener('beforeload', imageBamHack, true);
+  window.document.addEventListener('beforeload', imageBamHack, false);
+  window.document.addEventListener('load', function() { window.stop(); window.document.body.removeAttribute('onload'); }, false);
 }

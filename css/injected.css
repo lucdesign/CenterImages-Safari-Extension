@@ -2,118 +2,91 @@
 *    injected.css
 *
 *    CenterImages Safari Extension
-*    Version 5.0.4
-*    © 2011 lucdesign
+*    Version 6.0.2
+
+*    © 2012 lucdesign
 **/
 
-/* first we got to hide all images! */
-body > img:only-child:not(.picture) { opacity: 0; }
+body.CenterImages > img:only-child {
+  opacity: 1;
+  -webkit-transition-property: opacity;
+}
+
+body:not(.CenterImages) > img:only-child {
+  opacity: 0;
+  -webkit-transition-property: opacity;
+  -webkit-transition-duration: 0.3s;
+}
 
 .CenterImages, .CenterImages * {
   margin: 0;
   padding: 0;
+  position: absolute;
+  -webkit-transition-duration: 0.3s;
 }
 
-.CenterImages .hide {
-  opacity: 0;
-  z-index: -1;
-}
-
-/*body { -webkit-user-select: none; }*/
 
 .CenterImages {
-  background: url(../gfx/badge.png) 0px 10px no-repeat;
+  background: url(../gfx/badge.png) 0px 10px no-repeat fixed;
   cursor: default, url(../gfx/bgColor.cur), default;
-  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: auto;
+  min-height: 100%;
   text-align: center;
   -webkit-user-select: none;
   font-size: 0;
-  -webkit-transition: background-color 1s;
+  -webkit-transition-property: background-color;
 }
 
-.CenterImages.zoom {
-  overflow: hidden;
+.CenterImages.enhanced img:not(#proxy),
+.CenterImages:not(.enhanced) img#proxy {
+  opacity: 0; z-index: -1;
 }
 
-.CenterImages img {
-  vertical-align: middle;
-}
+.CenterImages.drag { cursor: url(../gfx/bgColor.cur), default; -webkit-transition-duration: 0s; }
 
-.CenterImages.drag {
-  cursor: url(../gfx/bgColor.cur), default;
-  -webkit-transition: background-color 0s;
-}
+.CenterImages * { -webkit-transition-property: opacity; }
 
-.CenterImages img,
-.CenterImages canvas,
-.CenterImages.indicator {
-  -webkit-transition-property: opacity;
-  -webkit-transition-duration: 0.4s;
-  -webkit-transition-delay: 0;
-}
+/* cursors */
 
-.CenterImages img.hide,
-.CenterImages canvas.hide {
-  -webkit-transition-duration: 0.4s;
-  -webkit-transition-delay: 0.4s;
-}
-
-.CenterImages .picture {
-  cursor: -webkit-zoom-in;
-}
-
-.CenterImages.zoom .picture {
-  cursor: -webkit-zoom-out;
-}
-
-.CenterImages.bigger .picture {
-  cursor: -webkit-zoom-out;
-}
-
-.CenterImages.bigger.zoom .picture {
-  cursor: -webkit-zoom-in;
-}
-
-.CenterImages canvas {
-  position: absolute;
-}
-
-.CenterImages.zoom img {
-  width: auto;
-  height: 100%;
-}
-
-.CenterImages.zoom.wider img {
-  width: 100%;
-  height: auto;
-}
+.CenterImages:not(.zoom) img { cursor: -webkit-zoom-in; clear: both; }
+.CenterImages.zoom img { cursor: -webkit-zoom-out; }
+.CenterImages.bigger:not(.zoom) img { cursor: -webkit-zoom-out; }
+.CenterImages.bigger.zoom img { cursor: -webkit-zoom-in; }
 
 
+/* positioning */
+
+/* for original size */
+.CenterImages:not(.zoom) img { top: 50%; left: 50%; }
+
+.CenterImages:not(.zoom).wider img { left: 0; }
+.CenterImages:not(.zoom).taller img { top: 0; }
+
+/* for .zoom */
+.CenterImages.zoom { overflow: hidden; }
+.CenterImages.zoom img { left: 0; top: 0; }
+
+.CenterImages.zoom img { width: auto; height: 100%; }
+.CenterImages.zoom.shimOnTop img { width: 100%; height: auto; }
 
 /*************************************** EFFECTS ************************************************/
 
-.CenterImages#Shadow .picture {
+.CenterImages#Shadow img {
   box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
 }
 
-.CenterImages#Reflection .picture {
+.CenterImages#Reflection img {
   -webkit-box-reflect:
   below 1px -webkit-linear-gradient( top, transparent, transparent 70%, rgba(0,0,0,.3) );
-}
-
-.CenterImages#Reflection .picture.hide {
-  -webkit-box-reflect:
-  below 1px -webkit-linear-gradient( top, transparent, transparent 70%, rgba(0,0,0,0.1) );
 }
 
 /*************************************** EQ INDICATOR ************************************************/
 
 .CenterImages .indicator {
-  position: absolute;
+  position: fixed;
   text-align: left;
   background-color: transparent;
   left: 147px;
@@ -123,38 +96,30 @@ body > img:only-child:not(.picture) { opacity: 0; }
   text-align: center;
   line-height: 42px;
   font-size: 11px;
-  -webkit-transition: opacity 0.4s;
+  -webkit-transition-property: opacity;
   font-family: 'Eurostile-Extended-Two', Verdana;
+  z-index: -1;
 }
 
 .CenterImages .indicator::before { content: 'EQ'; }
 
-.CenterImages .indicator.inactive {
+.CenterImages:not(.enhanced) .indicator {
   color: rgba(255,50,0,.5);
   text-shadow: 0 0 10px rgba(255,0,0,.3);
 }
 
-.CenterImages .indicator.inactive.hide {
-  opacity: 1;
-}
-
-.CenterImages .indicator.inactive::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 20px;
-  height: 2px;
-  background-color: rgba(255,50,0,.5);
-  box-shadow: 0 0 10px rgba(255,0,0,.3);
-  margin: -1px -10px;
-  -webkit-transform: rotate(-30deg);
+.CenterImages:not(.enhanced) .indicator.inactive {
+  color: transparent;
+  text-shadow: none;
 }
 
 /*************************************** INSTRUCTIONS WINDOW ************************************************/
 
-/* we cannot apply an id when we use the SVG 'pseudo document hack', so we generate a new tag called 'inst' */
-.CenterImages inst {
+.CenterImages .helpWindow * {
+  position: relative;
+}
+
+.CenterImages .helpWindow {
   font-size: 12px;
   line-height: 15px;
   font-family: 'Lucida Grande', Verdana, sans-serif;
@@ -171,23 +136,24 @@ body > img:only-child:not(.picture) { opacity: 0; }
   background: transparent -webkit-gradient(linear, left top, left bottom, from(rgba(240,240,240,0.95)), to(rgba(200,200,200,0.95)));
   -webkit-border-radius: 20px;
   -webkit-box-shadow: 0px 3px 15px rgba(0,0,0,.5);
-  -webkit-transition: all 0.4s ease-out;
+  -webkit-transform-origin: 90% top;
+  -webkit-transition-property: all;
+  -webkit-transition-timing-function: ease-in-out;
 }
 
-.CenterImages inst.hide {
-  -webkit-transform: translate( 0, -300px ) scale(0) ;
-  -webkit-transform-origin: right top;
-  -webkit-transition: all 0.4s ease-in;
+.CenterImages:not(.help) .helpWindow {
+  -webkit-transform: translate( 0, -220px ) scale(0) ;
 }
 
-.CenterImages inst h1 {
+.CenterImages .helpWindow h1 {
   font-size: 22px;
   line-height: 33px;
 
 }
+
 /* INSTRUCTIONS CLOSE BUTTON */
 
-.CenterImages inst .xButton { 
+.CenterImages .helpWindow .xButton { 
   position: absolute;
   top: 10px;
   right: 10px;
@@ -200,12 +166,12 @@ body > img:only-child:not(.picture) { opacity: 0; }
   0px 2px 2px rgba(255,255,255,.3),
   0px -2px 2px rgba(0,0,0,.3);
   border: 1px solid rgba(0,0,0,.7);
-  -webkit-transition: all 0.4s;
+  -webkit-transition-property: all;
 }
 
 /* the cross on the close button is pure CSS */
-.CenterImages inst .xButton:before,
-.CenterImages inst .xButton:after {
+.CenterImages .helpWindow .xButton:before,
+.CenterImages .helpWindow .xButton:after {
   content: '';
   width: 30px;
   height: 6px;
@@ -217,16 +183,12 @@ body > img:only-child:not(.picture) { opacity: 0; }
   left: 19px;
 }
 
-.CenterImages inst .xButton:before { -webkit-transform: rotate(135deg); box-shadow: inset 0px -1px 1px rgba(0,0,0,.4); }
-.CenterImages inst .xButton:after { -webkit-transform: rotate(45deg); box-shadow: inset 1px 0px 1px rgba(0,0,0,.4); }
-
-.CenterImages inst .xButton:hover { background-color: red; }
-.CenterImages inst .xButton:hover:before,
-.CenterImages inst .xButton:hover:after {
-  background-color: white 
-}
-
-.CenterImages inst .xButton:active { 
+.CenterImages .helpWindow .xButton:before { -webkit-transform: rotate(135deg); box-shadow: inset 0px -1px 1px rgba(0,0,0,.4); }
+.CenterImages .helpWindow .xButton:after { -webkit-transform: rotate(45deg); box-shadow: inset 1px 0px 1px rgba(0,0,0,.4); }
+.CenterImages .helpWindow .xButton:hover { background-color: red; }
+.CenterImages .helpWindow .xButton:hover:before,
+.CenterImages .helpWindow .xButton:hover:after { background-color: white }
+.CenterImages .helpWindow .xButton:active { 
   -webkit-box-shadow:
   inset 0px 2px 2px rgba(0,0,0,.2),
   inset 0px -2px 2px rgba(0,0,0,.2),
@@ -234,10 +196,10 @@ body > img:only-child:not(.picture) { opacity: 0; }
   0px 2px 2px rgba(255,255,255,.7);
 }
 
-.CenterImages inst h1, h3        { font-weight: bold; }
-.CenterImages inst h1            { font-size: 27px; margin-bottom: 14px; }
-.CenterImages inst h3, p, hr     { margin-bottom: 8px; }
-.CenterImages inst h3            { font-size: 12px; }
+.CenterImages .helpWindow h1, .CenterImages h3                  { font-weight: bold; }
+.CenterImages .helpWindow h1                                    { font-size: 27px; margin-bottom: 14px; }
+.CenterImages .helpWindow h3, .CenterImages p, .CenterImages hr { margin-bottom: 8px !important; }
+.CenterImages .helpWindow h3                                    { font-size: 12px; }
 
 .CenterImages .svgWrapper {
   display: block;
@@ -247,7 +209,7 @@ body > img:only-child:not(.picture) { opacity: 0; }
 
 /* HUD FOR MULTI IMAGE MODE (inactive to date) */
 
-.hud {
+.CenterImages.hud {
   display: block;
   position: absolute;
   height: 20px;
@@ -259,10 +221,10 @@ body > img:only-child:not(.picture) { opacity: 0; }
   text-shadow: 1px 1px 1px black;
   text-indent: 5px;
   overflow: hidden;
-  -webkit-transition: opacity 0.4s;
+  -webkit-transition-property: opacity;
 }
 
-.hud span.button {
+.CenterImages.hud span.button {
   width: 20px;
   height: 16px;
   margin: 2px 5px;

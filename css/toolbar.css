@@ -1,159 +1,169 @@
 /**
 *    toolbar CSS
 *    CenterImages Safari Extension
-*    Version 5.0.4
-*    © 2011 lucdesign
+*    Version 6.0.2
+
+*    © 2012 lucdesign
 **/
 
-* { -webkit-transition: opacity 1s;
-}
+* { border: none; margin: 0; padding: 0; -webkit-transition: all 0.05s; }
 
 body {
-  text-align: center;
-  background: hsl(35,3%,62%) url('../gfx/badge.png') left no-repeat;
-  -webkit-box-shadow: inset 0px 1px 0px hsl(0,0%,75%), inset 0px -1px 0px hsl(0,0%,0%); 
-  box-shadow: inset 0px 1px 0px hsl(0,0%,75%), inset 0px -1px 0px hsl(0,0%,0%); 
-  padding: 4px 180px 0px 180px;
   color: black;
+  text-align: center;
+  background-color: transparent;
+  background-image: url('../gfx/badge.png');
+  background-position: left center;
+  background-repeat: no-repeat;
+  box-shadow: inset 0px 1px 0px hsl(0,0%,75%), inset 0px -1px 0px hsl(0,0%,0%); 
+  padding: 3px 5px 0 5px;
   text-shadow: 1px 1px rgba(255,255,255,.3);
   font-family: 'Lucida Grande', 'MS Shell Dlg', Verdana;
 }
 
-input, button {
-  margin-right: 5px;
-  z-index: 2;
-  position: relative;
-  cursor: pointer;
-  text-shadow: 0px 1px 0px hsla(0,0%,100%,.3);
-}
-
-button,
-button:disabled:active {
-  background-image:
-  -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    from(hsl(0,0%,88%)),
-    to(hsl(0,0%,66%))
-  );
-  -webkit-linear-gradient(
-    top,
-    hsl(0,0%,88%),
-    hsl(0,0%,66%)
-  );
-  border: 1px solid hsl(0,0%,31%);
-  border-radius: 4px;
-  box-shadow: 0px 1px 0px rgba(255,255,255,.3);
-  height: 22px;
-  padding: 0 0 0 12px;
-  width: 140px;
-  z-index: 2;
-}
-
-button:active {
-  -webkit-box-shadow: inset hsla(0,0%,0%,1) 0 1px 5px;
-  box-shadow: inset hsla(0,0%,0%,1) 0 1px 5px;
-  background-image:
-  -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    from(hsl(0,0%,70%)),
-    to(hsl(0,0%,50%))
-  );
-  background-image:
-  -webkit-linear-gradient(
-    top,
-    hsl(0,0%,70%),
-    hsl(0,0%,50%)
-  );
-}
-
-button:not(#hide)::before,
-button:not(#hide)::after {
-  content: '';
-  position: absolute;
-  top: 5px;
-  left: 6px;
-  width: 8px;
-  height: 8px;
-  border-radius: 5px;
-  border: 1px solid rgba(0,0,0,.3);
-  -webkit-transition: all 0.4s;
-}
-
-button:not(#hide)::before {
-  background-image:
-  -webkit-gradient(radial, center center, 0, center center 50%, from(rgba(100,100,100,1)), to(black));
-  background-image:
-  -webkit-radial-gradient(center, rgba(100,100,100,1), black);
-}
-
-button:not(#hide)::after {
-  background-image: -webkit-radial-gradient(center, rgba(100,255,100,1), green);
-  box-shadow: 0 0 4px green;
+/* we hide some elements when the window gets too narrow */
+body.narrow { background-image: none; }
+body.narrow #hide,
+body.narrow #copy {
   opacity: 0;
 }
 
-button:not(#hide).pressed::after {
-  opacity: 1;
+/* firm grounds for positioning */
+body * { position: absolute; }
+
+body.blur:not(.active), body.disabled { color: #888; }
+
+/* carries the centered elements */
+#buttonbar {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  height: 23px;
+  width: 727px;
+  z-index: 1;
 }
 
-button:disabled { color: #888; }
-label.disabled { color: #777; }
+#buttonbar > * { top: 0 };
 
-button:not(#hide):disabled::after {
-  background-image: -webkit-radial-gradient(center, rgba(150,100,100,1), rgba(100,100,100,1));
-  box-shadow: 0 0 4px transparent;
-  border: 1px solid rgba(100,100,100,.3);
-  opacity: 1;
+/* positions of the elements on the centered bar */
+#zoom { left: 10px; }
+#equi { left: 157px; }
+#bg   { left: 304px; }
+#help { right: 10px; margin-right: 0;}
+
+/* common styles for buttons and background frame */
+button, #bg {
+  box-sizing: border-box;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 4px;
+  height: 23px;
+  margin: 0 5px 0 0;
+  text-shadow: 0px 1px 0px hsla(0,0%,100%,.3);
+  overflow: hidden;
 }
 
-button#hide {
-  width: 2em;
+/* button specific styles */
+button {
+  cursor: pointer;
+  border-color: hsl(0, 0%, 33%);
+  background-image: -webkit-linear-gradient(top, hsl(0,0%,99%), hsl(0,0%,72%));
+  box-shadow: 0px 1px 0px rgba(255,255,255,.3);
+  padding: 0 0 0 12px;
+  width: 140px;
+  border-width: 1px;
+}
+
+/* what an active button looks like */
+body:not(.disabled) button:not(:disabled):active, button#hide:active {
+  -webkit-box-shadow: inset hsla(0,0%,0%,1) 0 1px 5px;
+  box-shadow: inset hsla(0,0%,0%,1) 0 1px 5px;
+  background-image: -webkit-linear-gradient( top, hsl(0,0%,70%), hsl(0,0%,50%) );
+}
+
+/* some buttons get 'LEDs' and therefore special corners */
+button:not(#hide) { border-radius: 12px 4px 4px 12px; }
+
+/* green 'LEDs', turned off */
+button:not(#hide)::before {
   position: absolute;
-  right: 10px;
+  content: '';
+  display: block;
   top: 4px;
-  padding: 0;
-}
-button#hide::after {
-  content: '×';
+  left: 3px;
+  width: 13px;
+  height: 12px;
+  border-radius: 7px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #444;
+  background-image: -webkit-radial-gradient(50% 30%, white, rgba(255,255,255, 0.3) 10%, transparent 30%, transparent 60%, black);
+  background-color: #252;
+  box-shadow: 0px 1px 0px white, 0px -1px 0px black;
 }
 
+/* green 'LEDs' lit */
+button:not(#hide).pressed::before { background-color: #4F2; }
+
+/* these leds are dead */
+.disabled button:not(#hide)::before, button:not(#hide):disabled::before { background-color: #888; }
+
+/* when bar is disabled, ghost everything */
+.disabled *:not(#hide) { opacity: 0.3; }
+
+/* the button for hiding the bar … */
+button#hide {
+  width: 23px;
+  right: 10px;
+  top: 3px;
+  padding: 0;
+  border-radius: 4px;
+  font-size: 17px;
+}
+/* … contains an '×' */
+button#hide::after { content: '×'; }
+
+/* common styles for labels */
 label {
+  top: 4px;
   color: hsl(0,0%,15%);
-  margin-left: 10px;
-  vertical-align: 0px;
   font-weight: 500;
   text-shadow: 0px 1px 0px hsla(0,0%,100%,.3);
 }
 
+label.disabled {
+  color: #888;
+}
+
+/* positioning slider, auto button and labels */
+label#slbl { left: 7px; }
+label#albl { right: 7px; }
+input#bgsl { left: 79px; top: 9px;}
+input#auto { right: 35px; top: 5px;}
+
+/* the copyright links to my site */
 #copy {
   text-align: right;
   width: 150px; height: 20px;
   line-height: 20px;
-  position: absolute; bottom: 4px; right: 57px;
-  cursor: pointer;
-  z-index: 0;
+  bottom: 4px; right: 57px;
 }
 
+/* styling the background color slider */
 input[type='range'] {
   -webkit-appearance: none; /* Remove Safari default */
   width: 128px;
   vertical-align: -5px;
   height: 5px;
   border-radius: 3px;
-  position: relative; top: -5px;
+  top: -5px;
   background-image: -webkit-linear-gradient( left, black, white );
-  border-top: 1px solid rgba(0,0,0,0.5);
-  border-bottom: 1px solid rgba(255,255,255,0.2);
-  cursor: pointer;
+  border-top-color: rgba(0,0,0,0.5);
+  border-bottom-color: rgba(255,255,255,0.2);
 }
 
-input[type='range']:disabled {
-  background: transparent;
-}
+input[type='range']:disabled,
+.disabled input[type='range'] { opacity: 0; }
 
 input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none; /* Remove Safari default */
@@ -162,7 +172,7 @@ input[type='range']::-webkit-slider-thumb {
   left: 0;
   width: 22px;
   height: 17px;
-  border-radius: 4px;
+  border-radius: 7px;
   background-image:
   -webkit-linear-gradient(
     left,
@@ -183,33 +193,22 @@ input[type='range']::-webkit-slider-thumb {
     hsla(0,0%,0%,.2)
   );
   box-shadow:
-  hsla(0, 0%, 100%, 0.5) 0 2px 2px inset,
+  hsla(0, 0%, 100%, 0.5) 0  2px 2px inset,
   hsla(0, 0%,   0%, 0.3) 0 -1px 0px inset,
-  hsla(0, 0%,  17%, 0.5  ) 0 1px 0px,
-  hsla(0, 0%,  15%, 0.5  ) 0 2px 0px,
-  hsla(0, 0%,   0%, 0.5) 0 4px 3px;
+  hsla(0, 0%,  17%, 0.5) 0  1px 0px,
+  hsla(0, 0%,  15%, 0.3) 0  2px 0px,
+  hsla(0, 0%,   0%, 0.3) 0  4px 3px;
   -webkit-transform: translateY(-2px);
-  -webkit-transition: opacity 0.4s 0.4s;
-  cursor: pointer;
 }
 
-input[type='range']:disabled::-webkit-slider-thumb {
+input[type='range']:disabled::-webkit-slider-thumb,
+.disabled input[type='range']::-webkit-slider-thumb {
   opacity: 0;
 }
 
+/* the frame around all background color controls */
 #bg {
   display: inline-block;
-  position: relative;
-  top: 0;
-  left: 0;
-/*  background-color: rgba(0,0,0,0.05);*/
-  border-radius: 4px;
-  border: 1px solid hsl(0,0%,31%);
-  box-shadow:
-  inset 0px -1px 1px rgba(255,255,255,.6),
-  inset 0px 1px 1px rgba(0,0,0,.4),
-  0px 1px 0px rgba(255,255,255,.3);
-  height: 17px;
-  padding: 3px 12px 0 12px;
-  margin-right: 5px;
+  width: 265px;
+  border-color: #777;
 }
