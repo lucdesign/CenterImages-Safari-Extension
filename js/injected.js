@@ -13,7 +13,7 @@
 (function() {
 
   // shim (adds .classList to safari 5 and below)
-  (function(){
+  (function() {
     if (document.createElement('a').classList === undefined) {
       /*
       * classList.js: element.classList implementation.
@@ -90,10 +90,7 @@
     var
     doc = document instanceof window.SVGDocument ? document.implementation.createHTMLDocument(document.URL) : document,
     newElem = doc.createElement(nodeType);
-    
-    if (classes) {
-      newElem.className = classes;
-    }
+    newElem.classList.add(classes);
     domParent.appendChild(newElem);
     return newElem;
   }
