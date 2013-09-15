@@ -615,7 +615,7 @@
       children;
 
       // iframe alarm!
-      if (window.top !== window) {
+      if (parent.frames.length > 0) {
         return;
       }
 
