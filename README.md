@@ -18,11 +18,10 @@ CenterImages enhances Safari's handling of direct image URLs (JPG, PNG, GIF, TIF
 CenterImages 7 is a Safari Web Extension. Until it is distributed via the App Store, it runs in developer mode:
 
 1. Download or clone this repository
-2. Open Safari → Settings → Advanced → enable **"Show features for web developers"**
-3. Open Safari → Develop → **"Allow unsigned extensions"**
-4. Open Safari → Settings → Extensions → **"Add temporary extension..."**
-5. Select the repository folder
-6. Enable CenterImages in the extensions list and allow access to all websites
+2. Open Safari → Settings → Developer → enable **"Allow unsigned extensions"**
+3. Open Safari → Settings → Extensions → **"Add temporary extension..."**
+4. Select the repository folder
+5. Enable CenterImages in the extensions list and allow access to all websites
 
 The extension resets on Safari restart — repeat steps 3–6 after each restart until a signed version is available.
 
