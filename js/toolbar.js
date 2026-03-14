@@ -72,7 +72,7 @@ window.addEventListener('load', function() {
           tellActiveTab('popup_help', helpWinVisible);
           break;
         case ui.copy:
-          browser.tabs.create({ url: 'http://www.luc.at/safari_extensions/' });
+          browser.tabs.create({ url: 'https://luc.at' });
           break;
         case ui.hide:
           window.close();
