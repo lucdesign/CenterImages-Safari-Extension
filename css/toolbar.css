@@ -1,0 +1,240 @@
+/**
+ *  toolbar.css
+ *  CenterImages Safari Extension — Version 7.0.0
+ *  © 2026 lucdesign
+ **/
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: all 0.1s ease;
+}
+
+:root {
+  --bg:        #1e1e1e;
+  --surface:   #2a2a2a;
+  --border:    #3a3a3a;
+  --text:      #e0e0e0;
+  --text-dim:  #888;
+  --accent:    #4CAF50;
+  --accent-on: #6ef07a;
+  --btn-bg:    #333;
+  --btn-hover: #444;
+  --btn-press: #222;
+  --radius:    8px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:        #f0f0f0;
+    --surface:   #ffffff;
+    --border:    #ccc;
+    --text:      #1a1a1a;
+    --text-dim:  #888;
+    --accent:    #2e7d32;
+    --accent-on: #4CAF50;
+    --btn-bg:    #e0e0e0;
+    --btn-hover: #d0d0d0;
+    --btn-press: #bbb;
+  }
+}
+
+html, body {
+  width: 240px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, 'Helvetica Neue', sans-serif;
+  font-size: 13px;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+#title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}
+
+body.disabled { opacity: 0.5; pointer-events: none; }
+
+/* ── section header ── */
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 2px;
+}
+
+/* ── buttons ── */
+#buttonbar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: static;
+  width: auto;
+  height: auto;
+}
+
+button {
+  position: static;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 34px;
+  padding: 0 12px;
+  background: var(--btn-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+}
+
+button:hover  { background: var(--btn-hover); }
+button:active { background: var(--btn-press); }
+
+/* LED dot */
+button::before {
+  content: '';
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #444;
+  border: 1px solid #222;
+  box-shadow: 0 0 4px transparent;
+}
+
+button.pressed::before {
+  background: var(--accent-on);
+  box-shadow: 0 0 6px var(--accent-on);
+}
+
+button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+button#hide {
+  position: static;
+  width: 20px; height: 20px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+button#hide::before { display: none; }
+button#hide::after  { content: '×'; }
+button#hide:hover   { color: var(--text); background: var(--surface); }
+
+/* ── background color section ── */
+#bg {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  background: var(--surface);
+  position: static;
+  overflow: hidden;
+}
+
+.bg-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+label {
+  position: static;
+  font-size: 12px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+label.disabled { opacity: 0.4; }
+
+input[type='range'] {
+  -webkit-appearance: none;
+  flex: 1;
+  min-width: 0;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, #111, #fff);
+  border: none;
+  position: static;
+  top: auto;
+}
+
+input[type='range']:disabled { opacity: 0.3; }
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ccc;
+  border: 2px solid #888;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  cursor: pointer;
+  position: relative;
+}
+
+.auto-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  position: static;
+  cursor: pointer;
+}
+
+/* ── footer ── */
+#copy {
+  position: static;
+  text-align: center;
+  font-size: 10px;
+  color: var(--text-dim);
+  padding-top: 2px;
+  width: auto;
+  height: auto;
+  cursor: pointer;
+}
+
+#copy:hover { color: var(--text); }

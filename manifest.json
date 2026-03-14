@@ -1,0 +1,48 @@
+{
+  "manifest_version": 2,
+  "name": "CenterImages",
+  "version": "7.0.0",
+  "description": "The best way to see images in Safari.",
+  "author": "lucdesign",
+
+  "icons": {
+    "32":  "Icon-32.png",
+    "48":  "Icon-48.png",
+    "64":  "Icon-64.png",
+    "128": "Icon-128.png"
+  },
+
+  "browser_action": {
+    "default_icon": "Icon-32.png",
+    "default_popup": "html/toolbar.html",
+    "default_title": "CenterImages"
+  },
+
+  "background": {
+    "scripts": ["js/l10n.js", "js/global.js"],
+    "persistent": true
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "js/l10n.js",
+        "js/injected.js"
+      ],
+      "css": ["css/injected.css"],
+      "run_at": "document_end"
+    }
+  ],
+
+  "permissions": [
+    "<all_urls>",
+    "tabs",
+    "storage"
+  ],
+
+  "web_accessible_resources": [
+    "gfx/*.png",
+    "gfx/*.cur"
+  ]
+}
