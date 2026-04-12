@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Safari InHance
+// @name         ImgInHance
 // @namespace    lucdesign.at
-// @version      1.1.0
+// @version      1.1.1
 // @description  Inline image enhancement via auto-levels — applies canvas-based histogram correction to all images on a page whose histogram is suboptimal. Toggle via floating button.
 // @author       lucdesign
 // @match        *://*/*
@@ -13,17 +13,13 @@
 (function () {
   'use strict';
 
-  // ─── CONSTANTS ────────────────────────────────────────────────────────────────
-
-  const MIN_QUALITY   = 0.9;   // below this quality factor → image counts as "dull"
-  const CLIP_PERCENT  = 0.05;  // % of pixels clipped on each end per channel
-  const MIN_DIMENSION = 32;    // images smaller than this (w or h) are skipped
+  const MIN_QUALITY   = 0.9;
+  const CLIP_PERCENT  = 0.05;
+  const MIN_DIMENSION = 32;
   const STORAGE_KEY   = 'inhance_enabled';
 
-  // ─── STATE ────────────────────────────────────────────────────────────────────
-
-  const imageMap = new Map(); // img → { originalSrc, originalSrcset, enhancedSrc, enhanced }
-  const inFlight = new Set(); // imgs currently being fetched
+  const imageMap = new Map();
+  const inFlight = new Set();
   let   enabled  = (localStorage.getItem(STORAGE_KEY) !== 'false');
 
   // ─── ORIGIN CHECK ─────────────────────────────────────────────────────────────
@@ -35,32 +31,42 @@
     catch (e) { return false; }
   }
 
+  // ─── CANVAS → BLOB URL ────────────────────────────────────────────────────────
+  // Safari: toBlob() (callback), Chrome/FF: convertToBlob() (Promise).
+  // Wrap both in a unified Promise returning an object URL.
+
+  function canvasToObjectURL(canvas) {
+    return new Promise(function (resolve, reject) {
+      if (typeof canvas.convertToBlob === 'function') {
+        // Chrome / Firefox
+        canvas.convertToBlob({ type: 'image/jpeg', quality: 0.92 })
+          .then(function (blob) { resolve(URL.createObjectURL(blob)); })
+          .catch(reject);
+      } else if (typeof canvas.toBlob === 'function') {
+        // Safari
+        canvas.toBlob(function (blob) {
+          if (blob) { resolve(URL.createObjectURL(blob)); }
+          else { reject(new Error('toBlob returned null')); }
+        }, 'image/jpeg', 0.92);
+      } else {
+        // ultimate fallback — synchronous, blocks main thread
+        resolve(canvas.toDataURL('image/jpeg', 0.92));
+      }
+    });
+  }
+
   // ─── HISTOGRAM / AUTO-LEVELS CORE (ported from CenterImages v7) ───────────────
   //
-  // v1.1.0 optimizations vs v1.0.0:
-  //
+  // v1.1.x optimizations vs v1.0.0:
   // 1. histData: plain JS arrays → three Int32Array(256)
-  //    JIT can use typed memory layout; array access becomes pointer arithmetic.
-  //
-  // 2. lut: nested arrays → single flat Uint8ClampedArray(768)
-  //    Layout: lut[ch * 256 + v]. All 768 bytes contiguous in memory →
-  //    a single cache-line fetch covers all three channels per pixel.
-  //    Uint8ClampedArray also auto-clamps to 0–255, removing the need
-  //    for explicit clamping in the LUT build loop.
-  //
-  // 3. colorCorrect → returns a Promise via canvas.convertToBlob()
-  //    instead of the blocking canvas.toDataURL(). For a 2000px image
-  //    toDataURL() can block the main thread for 50–200ms. convertToBlob()
-  //    is async and browser-scheduled, keeping the UI responsive.
-  //    Callers (processImageData) are now async accordingly.
+  // 2. lut: nested arrays → flat Uint8ClampedArray(768), lut[ch*256+v]
+  // 3. canvas export: async (toBlob/convertToBlob) instead of blocking toDataURL
 
   function analyzeHistogram(pixData) {
-    // typed arrays: faster JIT, no property-lookup overhead
     const h0 = new Int32Array(256);
     const h1 = new Int32Array(256);
     const h2 = new Int32Array(256);
 
-    // optimized countdown loop (unchanged from CenterImages v7)
     let pointer = pixData.length;
     while (pointer--) {
       h2[pixData[--pointer]]++;
@@ -90,9 +96,6 @@
   }
 
   function colorCorrect(imageData, clipping, factor) {
-    // flat Uint8ClampedArray(768): lut[ch * 256 + v]
-    // all 768 bytes contiguous → single cache-line covers all three channels
-    // Uint8ClampedArray auto-clamps to 0–255
     const lut  = new Uint8ClampedArray(768);
     const data = imageData.data;
 
@@ -101,16 +104,15 @@
       const lo   = clipping[ch].lower;
       const f    = factor[ch];
       for (let v = 0; v < 256; v++) {
-        lut[base + v] = (v - lo) * f; // Uint8ClampedArray clamps automatically
+        lut[base + v] = (v - lo) * f;
       }
     }
 
-    // optimized countdown loop (unchanged from CenterImages v7)
     let pointer = data.length;
     while (pointer--) {
-      data[--pointer] = lut[512 + data[pointer--]]; // ch2: base=512
-      data[pointer]   = lut[256 + data[pointer--]]; // ch1: base=256
-      data[pointer]   = lut[       data[pointer]];  // ch0: base=0
+      data[--pointer] = lut[512 + data[pointer--]]; // ch2
+      data[pointer]   = lut[256 + data[pointer--]]; // ch1
+      data[pointer]   = lut[       data[pointer]];  // ch0
     }
 
     return imageData;
@@ -139,12 +141,10 @@
     colorCorrect(imageData, clipping, factor);
     ctx.putImageData(imageData, 0, 0);
 
-    // convertToBlob() is async and non-blocking vs toDataURL() which can
-    // stall the main thread for 50–200ms on large images
-    const blob        = await canvas.convertToBlob({ type: 'image/jpeg', quality: 0.92 });
-    const enhancedSrc = URL.createObjectURL(blob);
-    // note: blob URLs are used directly (no revoke) so toggle-off can restore;
-    // they are automatically released when the page unloads.
+    let enhancedSrc;
+    try {
+      enhancedSrc = await canvasToObjectURL(canvas);
+    } catch (e) { return; }
 
     imageMap.set(img, {
       originalSrc:    img.src,
@@ -213,7 +213,7 @@
     if (!entry) return;
     observer.disconnect();
     if (on && !entry.enhanced) {
-      img.srcset   = '';                 // kill srcset or browser ignores src
+      img.srcset   = '';
       img.src      = entry.enhancedSrc;
       entry.enhanced = true;
     } else if (!on && entry.enhanced) {
@@ -249,10 +249,9 @@
       if (m.type === 'attributes' && m.target.tagName === 'IMG') {
         const img = m.target;
         if (imageMap.has(img)) {
-          // page JS reverted our src/srcset — fight back
           const entry = imageMap.get(img);
           if (enabled) {
-            entry.enhanced = false; // state diverged from reality — reset
+            entry.enhanced = false;
             requestAnimationFrame(() => applyEnhancement(img, true));
           }
         } else {
@@ -295,7 +294,7 @@
   });
 
   function updateButton() {
-    btn.title       = enabled ? 'InHance: ON — click to disable' : 'InHance: OFF — click to enable';
+    btn.title       = enabled ? 'ImgInHance: ON — click to disable' : 'ImgInHance: OFF — click to enable';
     btn.textContent = '✦';
     btn.style.background = enabled ? '#1a73e8' : '#888';
     btn.style.color      = '#fff';
